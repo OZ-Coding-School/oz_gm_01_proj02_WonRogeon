@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     [Header("Detection")]
     public float viewDistance = 5f;
     public float viewAngle = 60f;
-    public float chaseDistance = 8f;
+    public float chaseDistance = 5f;
 
     [HideInInspector]
     public Vector2 facingDir = Vector2.down; // 기본 정면
