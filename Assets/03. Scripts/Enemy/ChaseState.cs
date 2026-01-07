@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 추격 상태
 public class ChaseState : IEnemyState
 {
     private Enemy enemy;
@@ -17,12 +18,15 @@ public class ChaseState : IEnemyState
             (enemy.player.position - enemy.transform.position).normalized;
 
         enemy.facingDir = dir;
-        enemy.movement.Move(dir);
+        enemy.movement.Move(dir);    //현재 단순 이동으로 구현했지만 나중에 A*알고리즘으로 전환
 
         // 추격 포기 조건
-        if (enemy.sensor.DistanceToPlayer() > enemy.chaseDistance)
+        float sqrDist = enemy.sensor.SqrDistanceToPlayer();
+        float sqrChaseDist = enemy.chaseDistance * enemy.chaseDistance;
+
+        if (sqrDist > sqrChaseDist)
         {
-            enemy.fsm.ChangeState(new ReturnState(enemy));
+            enemy.fsm.ChangeState(enemy.returnState);
         }
     }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//상태 전환의 절차를 보장하는 게 유일한 책임
 public class EnemyFSM
 {
     private IEnemyState currentState;

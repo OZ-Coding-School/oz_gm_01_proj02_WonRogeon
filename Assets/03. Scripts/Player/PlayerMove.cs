@@ -46,6 +46,8 @@ public class PlayerMove : MonoBehaviour
         inputDir = new Vector2(x, y);
 
         // 대각선 속도 보정
+        // sqrMagnitude를 쓴 이유는 magnitude 내부적으로 sqrt연산이 들어가는데
+        // sqrMagnitude는 비교용으로 훨씬 가볍기 때문!
         if (inputDir.sqrMagnitude > 1f)
             inputDir.Normalize();
     }
@@ -60,7 +62,7 @@ public class PlayerMove : MonoBehaviour
 
     /// <summary>
     /// Blend Tree용 애니메이션 파라미터 갱신
-    /// (정지 시 마지막 프레임 유지)
+    /// (정지 시 마지막 방향 프레임 유지)
     /// </summary>
     private void UpdateAnimation()
     {

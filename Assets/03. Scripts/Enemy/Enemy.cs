@@ -19,9 +19,22 @@ public class Enemy : MonoBehaviour
 
     [HideInInspector] public Vector2 spawnPosition;
 
+    // FSM은 적의 행동 흐름을 관리하는 객체이고
+    // 그 행동의 주체는 Enemy이기 때문에 FSM은 Enemy에 소속
     public EnemyFSM fsm;
     public EnemyMovement movement;
     public EnemySensor sensor;
+
+    // 매번 new상태를 만드는건 성능적 측면에서 별로라
+    // 미리 필드를 만들고 Awake에서 생성하는걸로 수정
+    [HideInInspector] public PatrolState patrolState;
+    [HideInInspector] public ChaseState chaseState;
+    [HideInInspector] public ReturnState returnState;
+
+    // 이전 상태 캐싱을 위한 필드 추가
+    private Vector2 prevFacingDir;
+    private bool wasMoving;
+
 
     private void Awake()
     {
@@ -34,28 +47,44 @@ public class Enemy : MonoBehaviour
 
 
         fsm = new EnemyFSM();
-        fsm.ChangeState(new PatrolState(this));
+
+        // 상태 객체는 한 번만 생성
+        patrolState = new PatrolState(this);
+        chaseState = new ChaseState(this);
+        returnState = new ReturnState(this);
+
+        // 초기 상태 설정
+        fsm.ChangeState(patrolState);
+
     }
 
     private void Update()
     {
         fsm.Update();
         UpdateAnimation();
+        //폴링은 괜찮지만 사이드 이펙트는 최소화해야하기에 UpdateAnimation 수정
     }
 
     public void UpdateAnimation()
     {
-        if (facingDir != Vector2.zero)
+        bool isMoving = facingDir != Vector2.zero;
+
+        // 이동 상태 변경 시에만 speed 갱신
+        if (isMoving != wasMoving)
         {
-            animator.speed = 1f;
+            animator.speed = isMoving ? 1f : 0f;
+            wasMoving = isMoving;
+        }
+
+        // 방향이 바뀌었을 때만 파라미터 갱신
+        if (isMoving && facingDir != prevFacingDir)
+        {
             animator.SetFloat("MoveX", facingDir.x);
             animator.SetFloat("MoveY", facingDir.y);
-        }
-        else
-        {
-            animator.speed = 0f;
+            prevFacingDir = facingDir;
         }
     }
+
 
 
     private void OnDrawGizmosSelected()

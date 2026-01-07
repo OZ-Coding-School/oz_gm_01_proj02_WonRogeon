@@ -18,7 +18,7 @@ public class ReturnState : IEnemyState
 
         if (toSpawn.magnitude < 0.2f)
         {
-            enemy.fsm.ChangeState(new PatrolState(enemy));
+            enemy.fsm.ChangeState(enemy.patrolState);
             return;
         }
 

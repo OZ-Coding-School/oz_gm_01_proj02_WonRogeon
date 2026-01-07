@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 단순 이동하는 패트롤(순찰) 상태, 감지되면 추격으로 전환
 public class PatrolState : IEnemyState
 {
     private Enemy enemy;
@@ -28,9 +29,10 @@ public class PatrolState : IEnemyState
 
         enemy.movement.Move(dir);
 
+        // 만일 플레이어를 감지했다면
         if (enemy.sensor.IsPlayerDetected())
         {
-            enemy.fsm.ChangeState(new ChaseState(enemy));
+            enemy.fsm.ChangeState(enemy.chaseState);
         }
     }
 

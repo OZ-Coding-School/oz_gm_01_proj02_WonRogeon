@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// 에너미 센서는 판단 전용 객체
+// enemy는 플레이어를 봤는지 직접 계산하지 않고
+// Sensor에게 물어보는 형태
 public class EnemySensor
 {
     private Enemy enemy;
@@ -19,8 +22,13 @@ public class EnemySensor
     {
         Vector2 toPlayer = player.position - enemy.transform.position;
 
-        if (toPlayer.magnitude > distance)
+        // sqrt 연산 제거한 버전!
+        float sqrDistance = toPlayer.sqrMagnitude;
+        float sqrViewDistance = distance * distance;
+
+        if (sqrDistance > sqrViewDistance)
             return false;
+
 
         float dot = Vector2.Dot(enemy.facingDir, toPlayer.normalized);
         float viewCos = Mathf.Cos(angle * 0.5f * Mathf.Deg2Rad);
@@ -28,9 +36,9 @@ public class EnemySensor
         return dot >= viewCos;
     }
 
-    public float DistanceToPlayer()
+    public float SqrDistanceToPlayer()
     {
-        return Vector2.Distance(enemy.transform.position, player.position);
+        return (enemy.transform.position - player.position).sqrMagnitude;
     }
 }
 

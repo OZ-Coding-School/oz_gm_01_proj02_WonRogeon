@@ -1,7 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// 플레이어가 닿으면 Zone을 변경하는 트리거
+/// 플레이어가 닿으면
+/// 현재 Zone에서 targetZone으로 전환하는 트리거
 /// </summary>
 public class ZoneTransitionTrigger : MonoBehaviour
 {

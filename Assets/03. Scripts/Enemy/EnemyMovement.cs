@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// 주어진 방향으로 실제 물리이동을 수행하는 컴포넌트
+// 나중에 A*알고리즘 적용할 예정, 대략 1월8~9일?
 public class EnemyMovement
 {
     private Rigidbody2D rb;
