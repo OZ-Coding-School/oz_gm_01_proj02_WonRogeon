@@ -9,7 +9,8 @@ public class Enemy : MonoBehaviour
     [Header("Detection")]
     public float viewDistance = 5f;
     public float viewAngle = 60f;
-    public float chaseDistance = 5f;
+    public float ChaseDistance = 5f;      // 추격 시작
+    public float ChaseLoseDistance = 7f;  // 추격 포기
 
     [HideInInspector]
     public Vector2 facingDir = Vector2.down; // 기본 정면
@@ -34,6 +35,10 @@ public class Enemy : MonoBehaviour
     // 이전 상태 캐싱을 위한 필드 추가
     private Vector2 prevFacingDir;
     private bool wasMoving;
+
+    // A*알고리즘을 위한 벽테두리 레이어마스크 지정
+    [SerializeField] private LayerMask obstacleMask;
+    public LayerMask ObstacleMask => obstacleMask;
 
 
     private void Awake()

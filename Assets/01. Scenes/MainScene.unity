@@ -309,9 +309,25 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1630381340}
+    - target: {fileID: 2040395268432828896, guid: 8fec55b45a9c8a74b8ffc595f27cbd07, type: 3}
+      propertyPath: moveSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040395268432828896, guid: 8fec55b45a9c8a74b8ffc595f27cbd07, type: 3}
+      propertyPath: chaseDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040395268432828896, guid: 8fec55b45a9c8a74b8ffc595f27cbd07, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 4708359371769391933, guid: 8fec55b45a9c8a74b8ffc595f27cbd07, type: 3}
       propertyPath: m_Name
       value: Zombie_Doll_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4708359371769391933, guid: 8fec55b45a9c8a74b8ffc595f27cbd07, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7038385477322019619, guid: 8fec55b45a9c8a74b8ffc595f27cbd07, type: 3}
       propertyPath: m_LocalPosition.x
@@ -889,10 +905,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zombie_Doll_1
       objectReference: {fileID: 0}
+    - target: {fileID: 6953362553435602353, guid: 8ff9c5e34540dbc49ae364a448c94a4e, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7443429468942789315, guid: 8ff9c5e34540dbc49ae364a448c94a4e, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1630381340}
+    - target: {fileID: 7443429468942789315, guid: 8ff9c5e34540dbc49ae364a448c94a4e, type: 3}
+      propertyPath: moveSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7443429468942789315, guid: 8ff9c5e34540dbc49ae364a448c94a4e, type: 3}
+      propertyPath: chaseDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7443429468942789315, guid: 8ff9c5e34540dbc49ae364a448c94a4e, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 7450242076866463740, guid: 8ff9c5e34540dbc49ae364a448c94a4e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14.36982
@@ -1108,6 +1140,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1630381340}
+    - target: {fileID: 2708611654202908731, guid: 1964b8d1109c506479d422b461775797, type: 3}
+      propertyPath: moveSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2708611654202908731, guid: 1964b8d1109c506479d422b461775797, type: 3}
+      propertyPath: chaseDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2708611654202908731, guid: 1964b8d1109c506479d422b461775797, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 4890573347353213585, guid: 1964b8d1109c506479d422b461775797, type: 3}
       propertyPath: m_LocalPosition.x
       value: 22.065472
@@ -1151,6 +1195,10 @@ PrefabInstance:
     - target: {fileID: 5884173203920158178, guid: 1964b8d1109c506479d422b461775797, type: 3}
       propertyPath: m_Name
       value: Zombie_Doll_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5884173203920158178, guid: 1964b8d1109c506479d422b461775797, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1729,7 +1777,7 @@ GameObject:
   - component: {fileID: 760274319}
   - component: {fileID: 760274318}
   - component: {fileID: 760274317}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AyaRoomBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
