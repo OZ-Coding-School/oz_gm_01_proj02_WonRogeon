@@ -53,6 +53,14 @@ public class ZoneManager : MonoBehaviour
             Player.Instance.transform.position = nextZone.spawnPoint.position;
         }
 
+        // 일단 카메라 텔포
+        CameraController.Instance.transform.position =
+    new Vector3(
+        Player.Instance.transform.position.x,
+        Player.Instance.transform.position.y,
+        -10f
+    );
+
         currentZone.OnEnter();
 
         // 화면 밝아짐
