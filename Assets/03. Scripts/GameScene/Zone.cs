@@ -9,9 +9,6 @@ public class Zone : MonoBehaviour
 {
     public string zoneName;
 
-    [Header("Player Spawn Point")]
-    public Transform spawnPoint;
-
     [Header("Camera Settings")]
     public bool followCamera = false;
     public Transform cameraFixedPoint;

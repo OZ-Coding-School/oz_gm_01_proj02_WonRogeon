@@ -22,50 +22,48 @@ public class ZoneManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void ChangeZone(Zone nextZone)
+    public void ChangeZone(Zone nextZone, ZoneSpawnPoint spawnPoint)
     {
         if (isTransitioning || nextZone == null)
             return;
 
-        StartCoroutine(ChangeZoneRoutine(nextZone));
+        StartCoroutine(ChangeZoneRoutine(nextZone, spawnPoint));
     }
+
 
     // Fade Out/In, 이전 Zone비활성화 다음 Zone 활성화, 플레이어 위치 이동, Zone 규칙적용
     // 등은 한 프레임에 끝나면 안되는 작업이기에 코루틴으로 설계
-    private IEnumerator ChangeZoneRoutine(Zone nextZone)
+    private IEnumerator ChangeZoneRoutine(
+    Zone nextZone,
+    ZoneSpawnPoint spawnPoint)
     {
         isTransitioning = true;
 
-        // 화면 어두워짐
         yield return FadeController.Instance.FadeOut();
 
-        // 이전 존 비활성화
         if (currentZone != null)
             currentZone.gameObject.SetActive(false);
 
-        // 다음 존 활성화
         nextZone.gameObject.SetActive(true);
         currentZone = nextZone;
 
-        // 플레이어 위치 이동
-        if (Player.Instance != null && nextZone.spawnPoint != null)
+        if (Player.Instance != null && spawnPoint != null)
         {
-            Player.Instance.transform.position = nextZone.spawnPoint.position;
+            Player.Instance.transform.position = spawnPoint.transform.position;
         }
 
-        // 일단 카메라 텔포
         CameraController.Instance.transform.position =
-    new Vector3(
-        Player.Instance.transform.position.x,
-        Player.Instance.transform.position.y,
-        -10f
-    );
+            new Vector3(
+                Player.Instance.transform.position.x,
+                Player.Instance.transform.position.y,
+                -10f
+            );
 
         currentZone.OnEnter();
 
-        // 화면 밝아짐
         yield return FadeController.Instance.FadeIn();
 
         isTransitioning = false;
     }
+
 }

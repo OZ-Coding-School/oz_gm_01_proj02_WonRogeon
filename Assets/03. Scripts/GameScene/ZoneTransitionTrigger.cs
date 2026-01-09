@@ -7,12 +7,14 @@ using UnityEngine;
 public class ZoneTransitionTrigger : MonoBehaviour
 {
     [SerializeField] private Zone targetZone;
+    [SerializeField] private ZoneSpawnPoint spawnPoint;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player"))
             return;
 
-        ZoneManager.Instance.ChangeZone(targetZone);
+        ZoneManager.Instance.ChangeZone(targetZone, spawnPoint);
     }
 }
+
