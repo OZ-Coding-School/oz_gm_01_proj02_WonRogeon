@@ -1,4 +1,3 @@
-// DoorInteract.cs
 using UnityEngine;
 
 public class DoorInteract : MonoBehaviour
@@ -6,9 +5,9 @@ public class DoorInteract : MonoBehaviour
     [SerializeField] private GameObject doorTilemap;
     [SerializeField] private string requiredKeyId = "Zone4Key";
 
-    private bool inRange = false;
-    private bool doorOpened = false;
-    private bool pendingOpen = false;
+    private bool inRange;
+    private bool doorOpened;
+    private bool pendingOpen;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -27,24 +26,27 @@ public class DoorInteract : MonoBehaviour
         if (!inRange || doorOpened)
             return;
 
+        // 메시지가 떠 있으면: Space로 닫기만 처리
         if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
-            return;
-
-        if (pendingOpen)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                pendingOpen = false;
-                doorOpened = true;
+                MessageUI.Instance.Hide();
 
-                KeyInventory.Instance.RemoveKey(requiredKeyId);
-
-                if (doorTilemap != null)
-                    doorTilemap.SetActive(false);
+                // 닫은 직후 문을 여는 단계라면 여기서 처리
+                if (pendingOpen)
+                {
+                    pendingOpen = false;
+                    doorOpened = true;
+                    KeyInventory.Instance.RemoveKey(requiredKeyId);
+                    if (doorTilemap != null)
+                        doorTilemap.SetActive(false);
+                }
             }
             return;
         }
 
+        // 메시지가 없을 때만 상호작용
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TryOpenDoor();
@@ -62,7 +64,6 @@ public class DoorInteract : MonoBehaviour
         }
 
         pendingOpen = true;
-
         MessageUI.Instance.Show(
             "Aya opened the locked door with a key."
         );

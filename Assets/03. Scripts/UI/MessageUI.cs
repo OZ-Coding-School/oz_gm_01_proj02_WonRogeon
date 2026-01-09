@@ -9,34 +9,17 @@ public class MessageUI : MonoBehaviour
 
     public bool IsShowing { get; private set; }
 
-    private bool waitForRelease;
-
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
         else
+        {
             Destroy(gameObject);
+            return;
+        }
 
         messageText.gameObject.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (!IsShowing)
-            return;
-
-        if (waitForRelease)
-        {
-            if (Input.GetKeyUp(KeyCode.Space))
-                waitForRelease = false;
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Hide();
-        }
     }
 
     public void Show(string message)
@@ -45,16 +28,16 @@ public class MessageUI : MonoBehaviour
             return;
 
         IsShowing = true;
-        waitForRelease = true;
-
         messageText.text = message;
         messageText.gameObject.SetActive(true);
-
         Time.timeScale = 0f;
     }
 
-    private void Hide()
+    public void Hide()
     {
+        if (!IsShowing)
+            return;
+
         IsShowing = false;
         messageText.gameObject.SetActive(false);
         Time.timeScale = 1f;
