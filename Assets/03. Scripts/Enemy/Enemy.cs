@@ -1,5 +1,14 @@
 using UnityEngine;
 
+// 패트롤시 이동패턴 종류 나열
+public enum PatrolMoveType
+{
+    Vertical,        // 위 아래
+    Horizontal,      // 좌 우
+    FourDirection,   // 상하좌우 랜덤
+    Random           // 자유 랜덤
+}
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : MonoBehaviour
 {
@@ -11,6 +20,14 @@ public class Enemy : MonoBehaviour
     public float viewAngle = 60f;
     public float ChaseDistance = 5f;      // 추격 시작
     public float ChaseLoseDistance = 7f;  // 추격 포기
+
+    [Header("Patrol Settings")]
+    [SerializeField] private PatrolMoveType patrolMoveType = PatrolMoveType.Vertical;
+    [SerializeField] private float patrolSwitchTime = 2f;
+
+    public PatrolMoveType PatrolMoveType => patrolMoveType;
+    public float PatrolSwitchTime => patrolSwitchTime;
+
 
     [HideInInspector]
     public Vector2 facingDir = Vector2.down; // 기본 정면
