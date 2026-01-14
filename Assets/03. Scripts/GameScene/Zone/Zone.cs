@@ -8,6 +8,7 @@ using UnityEngine;
 public class Zone : MonoBehaviour
 {
     public string zoneName;
+    public int floor;
 
     [Header("Camera Settings")]
     public bool followCamera = false;
@@ -25,6 +26,8 @@ public class Zone : MonoBehaviour
         {
             CameraController.Instance.SetFixed(cameraFixedPoint.position);
         }
+
+        ZoneInfoUI.Instance.SetZoneInfo(floor, zoneName);
     }
 
     public virtual void OnExit()

@@ -4,6 +4,8 @@ public class DoorInteract : MonoBehaviour
 {
     [SerializeField] private GameObject doorTilemap;
     [SerializeField] private string requiredKeyId = "Zone4Key";
+    [SerializeField] private DoorStateProvider doorState;
+
 
     private bool inRange;
     private bool doorOpened;
@@ -38,6 +40,10 @@ public class DoorInteract : MonoBehaviour
                 {
                     pendingOpen = false;
                     doorOpened = true;
+
+                    if (doorState != null)
+                        doorState.Unlock();
+
                     KeyInventory.Instance.RemoveKey(requiredKeyId);
                     if (doorTilemap != null)
                         doorTilemap.SetActive(false);

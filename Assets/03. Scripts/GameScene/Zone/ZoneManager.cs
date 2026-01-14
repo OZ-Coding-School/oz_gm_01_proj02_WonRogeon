@@ -22,6 +22,12 @@ public class ZoneManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        if (currentZone != null)
+            currentZone.OnEnter();
+    }
+
     public void ChangeZone(Zone nextZone, ZoneSpawnPoint spawnPoint)
     {
         if (isTransitioning || nextZone == null)
