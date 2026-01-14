@@ -45,6 +45,9 @@ public class ZonePreviewTrigger : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        if (ZoneNamePreviewUI.Instance == null)
+            return;
+
         isPlayerInside = false;
         ZoneNamePreviewUI.Instance.Hide();
     }

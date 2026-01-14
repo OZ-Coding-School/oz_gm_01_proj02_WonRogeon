@@ -1,62 +1,38 @@
 using UnityEngine;
 
-public class DoorInteract : MonoBehaviour
+public class DoorInteract : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject doorTilemap;
     [SerializeField] private string requiredKeyId = "Zone4Key";
     [SerializeField] private DoorStateProvider doorState;
 
-
-    private bool inRange;
     private bool doorOpened;
     private bool pendingOpen;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    /// <summary>
+    /// PlayerInteraction에서 Space 입력 시 호출됨
+    /// </summary>
+    public void Interact()
     {
-        if (other.CompareTag("Player"))
-            inRange = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            inRange = false;
-    }
-
-    private void Update()
-    {
-        if (!inRange || doorOpened)
+        if (doorOpened)
             return;
 
-        // 메시지가 떠 있으면: Space로 닫기만 처리
+        // 메시지가 떠 있는 상태라면
+        // 닫기 / 후속 처리만 담당
         if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            MessageUI.Instance.Hide();
+
+            if (pendingOpen)
             {
-                MessageUI.Instance.Hide();
-
-                // 닫은 직후 문을 여는 단계라면 여기서 처리
-                if (pendingOpen)
-                {
-                    pendingOpen = false;
-                    doorOpened = true;
-
-                    if (doorState != null)
-                        doorState.Unlock();
-
-                    KeyInventory.Instance.RemoveKey(requiredKeyId);
-                    if (doorTilemap != null)
-                        doorTilemap.SetActive(false);
-                }
+                OpenDoor();
             }
+
             return;
         }
 
-        // 메시지가 없을 때만 상호작용
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TryOpenDoor();
-        }
+        // 메시지가 없을 때만 문 열기 시도
+        TryOpenDoor();
     }
 
     private void TryOpenDoor()
@@ -70,8 +46,23 @@ public class DoorInteract : MonoBehaviour
         }
 
         pendingOpen = true;
+
         MessageUI.Instance.Show(
             "Aya opened the locked door with a key."
         );
+    }
+
+    private void OpenDoor()
+    {
+        pendingOpen = false;
+        doorOpened = true;
+
+        if (doorState != null)
+            doorState.Unlock();
+
+        KeyInventory.Instance.RemoveKey(requiredKeyId);
+
+        if (doorTilemap != null)
+            doorTilemap.SetActive(false);
     }
 }

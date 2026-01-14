@@ -1,56 +1,46 @@
 using UnityEngine;
 
-public class KeyPickupInteract : MonoBehaviour
+public class KeyPickupInteract : MonoBehaviour, IInteractable
 {
     [SerializeField] private string keyId = "Zone4Key";
 
-    private bool inRange;
     private bool pickedUp;
     private bool pendingDisable;
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            inRange = true;
-    }
 
-    private void OnTriggerExit2D(Collider2D other)
+    public void Interact()
     {
-        inRange = false;
-    }
-
-    private void Update()
-    {
-        if (!inRange)
-            return;
-
-        // 메시지가 떠 있으면: 닫기만 처리
+        // 메시지가 떠 있으면 최우선 처리
         if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                MessageUI.Instance.Hide();
+            MessageUI.Instance.Hide();
 
-                if (pendingDisable)
-                {
-                    gameObject.SetActive(false);
-                }
+            if (pendingDisable)
+            {
+                gameObject.SetActive(false);
             }
+
             return;
         }
 
+        // 이미 획득한 상태면 아무 것도 하지 않음
         if (pickedUp)
             return;
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            pickedUp = true;
-
-            if (KeyInventory.Instance.AddKey(keyId))
-            {
-                pendingDisable = true;
-                MessageUI.Instance.Show($"Aya get a {keyId}.");
-            }
-        }
+        TryPickupKey();
     }
 
+    private void TryPickupKey()
+    {
+        pickedUp = true;
+
+        if (KeyInventory.Instance.AddKey(keyId))
+        {
+            pendingDisable = true;
+            MessageUI.Instance.Show($"Aya get a {keyId}.");
+        }
+        else
+        {
+            pickedUp = false;
+        }
+    }
 }
