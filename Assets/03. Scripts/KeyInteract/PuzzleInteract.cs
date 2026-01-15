@@ -1,27 +1,45 @@
 using UnityEngine;
+using System.Collections;
 
 public class PuzzleInteract : MonoBehaviour, IInteractable
 {
     [Header("Puzzle UI")]
     [SerializeField] private GameObject puzzlePanel;
+    [SerializeField] private CanvasGroup puzzleCanvasGroup;
+
+    [Header("Screen Fade")]
+    [SerializeField] private CanvasGroup screenFadeGroup;
+    [SerializeField] private float fadeOutDuration = 0.5f;
+    [SerializeField] private float fadeInDuration = 0.8f;
 
     private bool isOpened;
+    private bool isSolved;
 
+    private void OnEnable()
+    {
+        PuzzleAnswerChecker.OnPuzzleSolved += HandlePuzzleSolved;
+    }
+
+    private void OnDisable()
+    {
+        PuzzleAnswerChecker.OnPuzzleSolved -= HandlePuzzleSolved;
+    }
+
+    // 닫는건 따로 포함안되어있어서 업데이트에서 처리하자
     private void Update()
     {
-        if (!isOpened)
+        if (!isOpened || isSolved)
             return;
 
-        // 퍼즐 열려 있는 동안 ESC로 닫기
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            ClosePuzzle();
+            ClosePuzzleInternal();
         }
     }
+
     public void Interact()
     {
-        // 이미 퍼즐이 열려 있으면 무시
-        if (isOpened)
+        if (isOpened || isSolved)
             return;
 
         OpenPuzzle();
@@ -31,32 +49,63 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
     {
         isOpened = true;
 
-        if (puzzlePanel != null)
-            puzzlePanel.SetActive(true);
+        puzzlePanel.SetActive(true);
+        puzzleCanvasGroup.alpha = 1f;
+        puzzleCanvasGroup.blocksRaycasts = true;
 
-        // 입력 잠금 & 시간 정지
         Time.timeScale = 0f;
 
-        // 플레이어 상호작용 잠금
         var playerInteraction = FindObjectOfType<PlayerInteraction>();
         if (playerInteraction != null)
             playerInteraction.enabled = false;
     }
 
-    /// <summary>
-    /// 퍼즐 패널에서 호출 (닫기 버튼 or 퍼즐 완료 시)
-    /// </summary>
-    public void ClosePuzzle()
+    private void HandlePuzzleSolved()
+    {
+        if (isSolved) return;
+
+        isSolved = true;
+        StartCoroutine(PuzzleClearSequence());
+    }
+
+    private IEnumerator PuzzleClearSequence()
+    {
+        // 1. 화면 점점 어두워짐
+        yield return StartCoroutine(Fade(screenFadeGroup, 0f, 1f, fadeOutDuration));
+
+        // 2. 완전히 어두워졌을 때 퍼즐 패널 닫기
+        ClosePuzzleInternal();
+
+        // 3. 화면 점점 밝아짐
+        yield return StartCoroutine(Fade(screenFadeGroup, 1f, 0f, fadeInDuration));
+    }
+
+    private void ClosePuzzleInternal()
     {
         isOpened = false;
 
-        if (puzzlePanel != null)
-            puzzlePanel.SetActive(false);
+        puzzleCanvasGroup.blocksRaycasts = false;
+        puzzlePanel.SetActive(false);
 
         Time.timeScale = 1f;
 
         var playerInteraction = FindObjectOfType<PlayerInteraction>();
         if (playerInteraction != null)
             playerInteraction.enabled = true;
+    }
+
+    private IEnumerator Fade(CanvasGroup group, float from, float to, float duration)
+    {
+        float t = 0f;
+        group.alpha = from;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            group.alpha = Mathf.Lerp(from, to, t / duration);
+            yield return null;
+        }
+
+        group.alpha = to;
     }
 }
