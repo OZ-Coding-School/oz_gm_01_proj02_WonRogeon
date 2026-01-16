@@ -1,8 +1,13 @@
+using System;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
     private IInteractable currentTarget;
+
+    // ?말풍선을 위한 이벤트 발행
+    public event Action<bool> OnInteractableStateChanged;
+
 
     private void Update()
     {
@@ -17,10 +22,13 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("Trigger Enter: " + other.name);
+
         var interactable = other.GetComponent<IInteractable>();
         if (interactable != null)
         {
             currentTarget = interactable;
+            OnInteractableStateChanged?.Invoke(true);
         }
     }
 
@@ -30,6 +38,7 @@ public class PlayerInteraction : MonoBehaviour
         if (interactable != null && interactable == currentTarget)
         {
             currentTarget = null;
+            OnInteractableStateChanged?.Invoke(false);
         }
     }
 }
