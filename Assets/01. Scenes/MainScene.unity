@@ -29786,7 +29786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzlePanel: {fileID: 1061731040}
   puzzleCanvasGroup: {fileID: 1061731045}
-  screenFadeGroup: {fileID: 249888515}
+  screenFadeGroup: {fileID: 0}
   fadeOutDuration: 0.8
   fadeInDuration: 2
 --- !u!1 &1061731040
@@ -40126,6 +40126,10 @@ PrefabInstance:
     - target: {fileID: 790161369395063222, guid: 9490d5df85e5c3049b4dfac35ba4c7aa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8486826326011533003, guid: 9490d5df85e5c3049b4dfac35ba4c7aa, type: 3}
+      propertyPath: fadeDuration
+      value: 0.6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

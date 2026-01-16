@@ -15,6 +15,7 @@ public class AyaRoomZone : Zone
 
         hasPlayedMonologue = true;
 
+
         MonologueUI.Instance.ShowSequence(
             new List<MonologueLine>
             {

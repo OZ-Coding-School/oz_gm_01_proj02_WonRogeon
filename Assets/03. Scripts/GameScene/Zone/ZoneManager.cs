@@ -74,6 +74,9 @@ public class ZoneManager : MonoBehaviour
     // 페이드인이 끝나고 Zone.Enter()가 호출되도록 코루틴 처리
     private IEnumerator SceneStartRoutine()
     {
+        // 기존의 불빛 이펙트 풀 반환
+        PoolManager.Instance.ResetPool("StartScene_Light");
+
         // 페이드 인 완료까지 대기
         yield return FadeController.Instance.FadeIn();
 
