@@ -24,8 +24,7 @@ public class ZoneManager : MonoBehaviour
 
     private void Start()
     {
-        if (currentZone != null)
-            currentZone.OnEnter();
+        StartCoroutine(SceneStartRoutine());
     }
 
     public void ChangeZone(Zone nextZone, ZoneSpawnPoint spawnPoint)
@@ -70,6 +69,17 @@ public class ZoneManager : MonoBehaviour
         yield return FadeController.Instance.FadeIn();
 
         isTransitioning = false;
+    }
+
+    // 페이드인이 끝나고 Zone.Enter()가 호출되도록 코루틴 처리
+    private IEnumerator SceneStartRoutine()
+    {
+        // 페이드 인 완료까지 대기
+        yield return FadeController.Instance.FadeIn();
+
+        // 페이드가 끝난 뒤에 Zone 진입 처리
+        if (currentZone != null)
+            currentZone.OnEnter();
     }
 
 }
