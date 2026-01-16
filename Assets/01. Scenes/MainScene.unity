@@ -29786,7 +29786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzlePanel: {fileID: 1061731040}
   puzzleCanvasGroup: {fileID: 1061731045}
-  screenFadeGroup: {fileID: 0}
+  screenFadeGroup: {fileID: 249888515}
   fadeOutDuration: 0.8
   fadeInDuration: 2
 --- !u!1 &1061731040
