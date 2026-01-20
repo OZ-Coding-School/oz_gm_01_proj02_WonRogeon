@@ -11,6 +11,10 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        // UI 떠 있으면 상호작용 차단
+        if (Time.timeScale == 0f)
+            return;
+
         if (currentTarget == null)
             return;
 
@@ -19,6 +23,7 @@ public class PlayerInteraction : MonoBehaviour
             currentTarget.Interact();
         }
     }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {

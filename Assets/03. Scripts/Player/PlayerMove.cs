@@ -26,12 +26,32 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        // 타임스케일이 0일 경우
+        // 게임이 일시정지된 상태이므로
+        // 입력 처리 및 방향 갱신을 모두 차단
+        if (Time.timeScale == 0f)
+        {
+            inputDir = Vector2.zero;
+
+            // 정지 프레임 유지
+            animator.speed = 0f;
+            return;
+        }
+
         ReadInput();
         UpdateAnimation();
     }
 
     private void FixedUpdate()
     {
+        // 타임스케일이 0일 경우
+        // 물리 이동도 강제로 정지
+        if (Time.timeScale == 0f)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
         Move();
     }
 
