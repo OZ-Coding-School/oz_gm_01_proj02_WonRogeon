@@ -1,15 +1,15 @@
 using UnityEngine;
 using TMPro;
 
-public class SaveSlotMenuUI : MonoBehaviour
+public class SaveConfirmUI : MonoBehaviour
 {
-    public static SaveSlotMenuUI Instance;
+    public static SaveConfirmUI Instance;
 
     [Header("Root")]
     [SerializeField] private GameObject root;
 
-    [Header("Slots")]
-    [SerializeField] private TMP_Text[] slotTexts;
+    [Header("Options")]
+    [SerializeField] private TMP_Text[] optionTexts; // 0: Yes, 1: No
     [SerializeField] private RectTransform selectionBar;
 
     [Header("Color")]
@@ -18,7 +18,7 @@ public class SaveSlotMenuUI : MonoBehaviour
 
     private int currentIndex;
     private bool isOpen;
-    private bool inputLocked;
+    private int slotIndex;
 
     private void Awake()
     {
@@ -35,13 +35,12 @@ public class SaveSlotMenuUI : MonoBehaviour
 
     private void Update()
     {
-        if (!isOpen || inputLocked)
+        if (!isOpen)
             return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Close();
-            SaveMenuUI.Instance.ReopenFromSlot();
+            Cancel();
             return;
         }
 
@@ -49,31 +48,29 @@ public class SaveSlotMenuUI : MonoBehaviour
         HandleSubmitInput();
     }
 
-    public void Open()
+    public void Open(int slotIndex)
     {
         if (isOpen)
             return;
 
+        this.slotIndex = slotIndex;
         isOpen = true;
-        inputLocked = false;
         currentIndex = 0;
 
         root.SetActive(true);
-        Time.timeScale = 0f;
-
         UpdateVisual();
     }
 
-    public void Close()
+    private void Close()
     {
         isOpen = false;
         root.SetActive(false);
     }
 
-    public void ResumeFromConfirm()
+    private void Cancel()
     {
-        inputLocked = false;
-        UpdateVisual();
+        Close();
+        SaveSlotMenuUI.Instance.ResumeFromConfirm();
     }
 
     private void HandleMoveInput()
@@ -89,7 +86,7 @@ public class SaveSlotMenuUI : MonoBehaviour
             return;
 
         currentIndex =
-            (currentIndex + dir + slotTexts.Length) % slotTexts.Length;
+            (currentIndex + dir + optionTexts.Length) % optionTexts.Length;
 
         UpdateVisual();
     }
@@ -99,22 +96,30 @@ public class SaveSlotMenuUI : MonoBehaviour
         if (!Input.GetKeyDown(KeyCode.Space))
             return;
 
-        inputLocked = true;
-        SaveConfirmUI.Instance.Open(currentIndex);
+        if (currentIndex == 0)
+        {
+            // YES : 아직 아무 동작도 하지 않음
+            return;
+        }
+        else
+        {
+            // NO
+            Cancel();
+        }
     }
 
     private void UpdateVisual()
     {
-        for (int i = 0; i < slotTexts.Length; i++)
+        for (int i = 0; i < optionTexts.Length; i++)
         {
-            slotTexts[i].color =
+            optionTexts[i].color =
                 (i == currentIndex) ? selectedColor : normalColor;
         }
 
         selectionBar.position =
             new Vector3(
                 selectionBar.position.x,
-                slotTexts[currentIndex].transform.position.y,
+                optionTexts[currentIndex].transform.position.y,
                 selectionBar.position.z
             );
     }

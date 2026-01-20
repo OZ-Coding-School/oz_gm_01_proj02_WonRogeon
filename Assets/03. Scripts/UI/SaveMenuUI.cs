@@ -14,6 +14,8 @@ public class SaveMenuUI : MonoBehaviour
 
     private int currentIndex;
     private bool isOpen;
+    private bool ignoreEscapeOnce;   
+
     public bool IsOpen => isOpen;
 
     private void Awake()
@@ -36,6 +38,12 @@ public class SaveMenuUI : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (ignoreEscapeOnce)
+            {
+                ignoreEscapeOnce = false; // 이 프레임 ESC 무시
+                return;
+            }
+
             Close(true);
             return;
         }
@@ -51,6 +59,7 @@ public class SaveMenuUI : MonoBehaviour
 
         isOpen = true;
         currentIndex = 0;
+        ignoreEscapeOnce = false;
 
         root.SetActive(true);
         Time.timeScale = 0f;
@@ -58,8 +67,18 @@ public class SaveMenuUI : MonoBehaviour
         UpdateVisual();
     }
 
-    // ESC로 닫을 때만 타임스케일 복구
-    public void Close(bool restoreTimeScale = false)
+    // SaveSlotMenuUI에서 돌아올 때 호출
+    public void ReopenFromSlot()
+    {
+        isOpen = true;
+        currentIndex = 0;
+        ignoreEscapeOnce = true;   // 여기서만 ESC 1회 차단
+
+        root.SetActive(true);
+        UpdateVisual();
+    }
+
+    public void Close(bool restoreTimeScale)
     {
         isOpen = false;
         root.SetActive(false);
@@ -89,7 +108,6 @@ public class SaveMenuUI : MonoBehaviour
 
         if (currentIndex == 0) // SAVE
         {
-            // SaveMenuRoot를 확실히 끄고 슬롯 메뉴로 전환
             Close(false);
             SaveSlotMenuUI.Instance.Open();
         }
