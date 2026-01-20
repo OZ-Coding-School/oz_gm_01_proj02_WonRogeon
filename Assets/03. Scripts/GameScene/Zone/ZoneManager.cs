@@ -1,9 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// GameScene 내 Zone 전환을 관리하는 매니저
-/// </summary>
 public class ZoneManager : MonoBehaviour
 {
     public static ZoneManager Instance;
@@ -11,7 +8,6 @@ public class ZoneManager : MonoBehaviour
     [Header("Current Zone")]
     [SerializeField] private Zone currentZone;
 
-    // 중복 코루틴 방지, 전환 안정성 확보 등을 위한 불변수
     private bool isTransitioning = false;
 
     private void Awake()
@@ -19,12 +15,15 @@ public class ZoneManager : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
+        {
             Destroy(gameObject);
+            return;
+        }
     }
 
     private void Start()
     {
-        StartCoroutine(SceneStartRoutine());
+        StartCoroutine(SceneStartRoutineSafe());
     }
 
     public void ChangeZone(Zone nextZone, ZoneSpawnPoint spawnPoint)
@@ -35,12 +34,9 @@ public class ZoneManager : MonoBehaviour
         StartCoroutine(ChangeZoneRoutine(nextZone, spawnPoint));
     }
 
-
-    // Fade Out/In, 이전 Zone비활성화 다음 Zone 활성화, 플레이어 위치 이동, Zone 규칙적용
-    // 등은 한 프레임에 끝나면 안되는 작업이기에 코루틴으로 설계
     private IEnumerator ChangeZoneRoutine(
-    Zone nextZone,
-    ZoneSpawnPoint spawnPoint)
+        Zone nextZone,
+        ZoneSpawnPoint spawnPoint)
     {
         isTransitioning = true;
 
@@ -71,18 +67,29 @@ public class ZoneManager : MonoBehaviour
         isTransitioning = false;
     }
 
-    // 페이드인이 끝나고 Zone.Enter()가 호출되도록 코루틴 처리
-    private IEnumerator SceneStartRoutine()
+    // ===== 안전한 시작 루틴 =====
+    private IEnumerator SceneStartRoutineSafe()
     {
-        // 기존의 불빛 이펙트 풀 반환
+        // 필수 싱글톤 준비 대기
+        while (FadeController.Instance == null)
+            yield return null;
+
+        while (PoolManager.Instance == null)
+            yield return null;
+
+        while (Player.Instance == null)
+            yield return null;
+
+        while (currentZone == null)
+            yield return null;
+
+        // 풀 리셋
         PoolManager.Instance.ResetPool("StartScene_Light");
 
-        // 페이드 인 완료까지 대기
+        // 페이드 인
         yield return FadeController.Instance.FadeIn();
 
-        // 페이드가 끝난 뒤에 Zone 진입 처리
-        if (currentZone != null)
-            currentZone.OnEnter();
+        // 최초 Zone 진입
+        currentZone.OnEnter();
     }
-
 }

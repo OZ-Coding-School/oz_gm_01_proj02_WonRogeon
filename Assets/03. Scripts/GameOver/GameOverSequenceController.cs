@@ -1,7 +1,8 @@
-// GameOverSequenceController.cs (발췌)
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class GameOverSequenceController : MonoBehaviour
 {
@@ -12,10 +13,25 @@ public class GameOverSequenceController : MonoBehaviour
     [SerializeField] private GameObject ayaDeath;
     [SerializeField] private TMP_Text gameOverText;
 
+    [Header("End Menu UI")]
+    [SerializeField] private RectTransform retryText;
+    [SerializeField] private RectTransform quitText;
+    [SerializeField] private RectTransform selectionBar;
+
+    [Header("Tween Settings")]
+    [SerializeField] private float menuMoveDistance = 60f;
+    [SerializeField] private float menuMoveDuration = 0.6f;
+    [SerializeField] private float menuInterval = 0.15f;
+    [SerializeField] private float selectionMoveDuration = 0.15f;
+
     private Animator bloodAnimator;
     private Animator ayaAnimator;
     private SpriteRenderer bloodSR;
     private SpriteRenderer ayaSR;
+
+    // ===== 메뉴 제어 상태 =====
+    private bool canInput;
+    private int currentIndex; // 0 = Retry, 1 = Quit
 
     private void Awake()
     {
@@ -34,7 +50,30 @@ public class GameOverSequenceController : MonoBehaviour
         ayaDeath.SetActive(false);
         gameOverText.gameObject.SetActive(false);
 
+        retryText.gameObject.SetActive(false);
+        quitText.gameObject.SetActive(false);
+        selectionBar.gameObject.SetActive(false);
+
+        canInput = false;
+
         PlayBloodEffect();
+    }
+
+    private void Update()
+    {
+        if (!canInput)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            currentIndex = 1 - currentIndex;
+            UpdateSelection();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ExecuteSelection();
+        }
     }
 
     private void PlayBloodEffect()
@@ -44,7 +83,7 @@ public class GameOverSequenceController : MonoBehaviour
         bloodAnimator.Play(0, 0, 0f);
     }
 
-    // Blood 애니메이션 끝에서 호출됨
+    // Blood 애니메이션 끝에서 호출
     public void OnBloodEffectFinished()
     {
         StartCoroutine(FadeOutBlood());
@@ -64,7 +103,7 @@ public class GameOverSequenceController : MonoBehaviour
         ayaAnimator.Play(0, 0, 0f);
     }
 
-    // Aya 죽음 애니메이션 끝에서 호출됨
+    // Aya 죽음 애니메이션 끝에서 호출
     public void OnAyaDeathAnimationFinished()
     {
         StartCoroutine(FadeOutAya());
@@ -79,7 +118,85 @@ public class GameOverSequenceController : MonoBehaviour
     private void ShowGameOverText()
     {
         gameOverText.gameObject.SetActive(true);
-        StartCoroutine(FadeText(gameOverText, 0f, 1f, 1.0f));
+        StartCoroutine(GameOverTextSequence());
+    }
+
+    private IEnumerator GameOverTextSequence()
+    {
+        yield return FadeText(gameOverText, 0f, 1f, 1.0f);
+        yield return new WaitForSeconds(0.6f);
+        yield return PlayEndMenuSequence();
+    }
+
+    private IEnumerator PlayEndMenuSequence()
+    {
+        Vector2 retryOrigin = retryText.anchoredPosition;
+        Vector2 quitOrigin = quitText.anchoredPosition;
+
+        retryText.anchoredPosition = retryOrigin - Vector2.up * menuMoveDistance;
+        quitText.anchoredPosition = quitOrigin - Vector2.up * menuMoveDistance;
+
+        retryText.gameObject.SetActive(true);
+        quitText.gameObject.SetActive(true);
+
+        retryText.DOAnchorPos(retryOrigin, menuMoveDuration)
+            .SetEase(Ease.OutCubic);
+
+        yield return new WaitForSeconds(menuInterval);
+
+        quitText.DOAnchorPos(quitOrigin, menuMoveDuration)
+            .SetEase(Ease.OutCubic);
+
+        yield return new WaitForSeconds(menuMoveDuration);
+
+        selectionBar.gameObject.SetActive(true);
+        selectionBar.position = retryText.position;
+
+        currentIndex = 0;
+        UpdateSelectionImmediate();
+
+        canInput = true;
+    }
+
+    private void UpdateSelection()
+    {
+        RectTransform target =
+            currentIndex == 0 ? retryText : quitText;
+
+        selectionBar
+            .DOMove(target.position, selectionMoveDuration)
+            .SetEase(Ease.OutQuad);
+
+        UpdateTextColor();
+    }
+
+    private void UpdateSelectionImmediate()
+    {
+        selectionBar.position = retryText.position;
+        UpdateTextColor();
+    }
+
+    private void UpdateTextColor()
+    {
+        retryText.GetComponent<TMP_Text>().color =
+            currentIndex == 0 ? Color.black : Color.white;
+
+        quitText.GetComponent<TMP_Text>().color =
+            currentIndex == 1 ? Color.black : Color.white;
+    }
+
+    private void ExecuteSelection()
+    {
+        canInput = false;
+
+        if (currentIndex == 0)
+        {
+            SceneManager.LoadScene("MainScene");
+        }
+        else
+        {
+            Application.Quit();
+        }
     }
 
     private IEnumerator FadeSprite(SpriteRenderer sr, float from, float to, float time)

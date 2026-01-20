@@ -1,10 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class AyaRoomZone : Zone
 {
-    private bool hasPlayedMonologue = false;
+    private bool hasPlayedMonologue;
+
+    public void ResetMonologue()
+    {
+        hasPlayedMonologue = false;
+    }
 
     public override void OnEnter()
     {
@@ -14,7 +17,6 @@ public class AyaRoomZone : Zone
             return;
 
         hasPlayedMonologue = true;
-
 
         MonologueUI.Instance.ShowSequence(
             new List<MonologueLine>
@@ -33,4 +35,5 @@ public class AyaRoomZone : Zone
         );
     }
 }
+
 

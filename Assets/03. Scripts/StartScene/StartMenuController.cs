@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using DG.Tweening;
 
 public class StartMenuController : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class StartMenuController : MonoBehaviour
     [Header("Scene")]
     [SerializeField] private string mainSceneName = "MainScene";
 
+    [Header("Tween")]
+    [SerializeField] private float selectionMoveDuration = 0.15f;
+
     private bool isTransitioning = false;
     private bool isCreditsOpen = false;
 
@@ -23,9 +27,12 @@ public class StartMenuController : MonoBehaviour
     private float inputCooldown = 0.1f;
     private float lastInputTime;
 
+    private Tween selectionTween;
+
     private void Start()
     {
-        UpdateVisual();
+        UpdateVisualImmediate();
+
         if (creditsPanel != null)
             creditsPanel.SetActive(false);
     }
@@ -35,7 +42,6 @@ public class StartMenuController : MonoBehaviour
         if (isTransitioning)
             return;
 
-        // 크레딧 열려 있을 때
         if (isCreditsOpen)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -120,13 +126,28 @@ public class StartMenuController : MonoBehaviour
         isCreditsOpen = false;
     }
 
+    // 연출 추가
+
     private void UpdateVisual()
     {
-        for (int i = 0; i < menuTexts.Length; i++)
-        {
-            menuTexts[i].color =
-                (i == currentIndex) ? selectedColor : normalColor;
-        }
+        UpdateTextColor();
+
+        Vector3 targetPos = new Vector3(
+            selectionBar.position.x,
+            menuTexts[currentIndex].transform.position.y,
+            selectionBar.position.z
+        );
+
+        selectionTween?.Kill();
+
+        selectionTween = selectionBar
+            .DOMove(targetPos, selectionMoveDuration)
+            .SetEase(Ease.OutQuad);
+    }
+
+    private void UpdateVisualImmediate()
+    {
+        UpdateTextColor();
 
         selectionBar.position =
             new Vector3(
@@ -134,5 +155,14 @@ public class StartMenuController : MonoBehaviour
                 menuTexts[currentIndex].transform.position.y,
                 selectionBar.position.z
             );
+    }
+
+    private void UpdateTextColor()
+    {
+        for (int i = 0; i < menuTexts.Length; i++)
+        {
+            menuTexts[i].color =
+                (i == currentIndex) ? selectedColor : normalColor;
+        }
     }
 }
