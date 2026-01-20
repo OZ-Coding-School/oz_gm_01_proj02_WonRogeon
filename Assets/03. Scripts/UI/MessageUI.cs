@@ -1,5 +1,6 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using System;
 
 public class MessageUI : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class MessageUI : MonoBehaviour
     [SerializeField] private TMP_Text messageText;
 
     public bool IsShowing { get; private set; }
+    private Action onClosed;
 
     private void Awake()
     {
@@ -19,17 +21,33 @@ public class MessageUI : MonoBehaviour
             return;
         }
 
-        messageText.gameObject.SetActive(false);
+        // 루트 자체를 꺼둔다 (MonologueUI와 동일)
+        gameObject.SetActive(false);
+        IsShowing = false;
     }
 
-    public void Show(string message)
+    private void Update()
+    {
+        if (!IsShowing)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Hide();
+        }
+    }
+
+    public void Show(string message, Action onClosed = null)
     {
         if (IsShowing)
             return;
 
         IsShowing = true;
+        this.onClosed = onClosed;
+
         messageText.text = message;
-        messageText.gameObject.SetActive(true);
+
+        gameObject.SetActive(true);
         Time.timeScale = 0f;
     }
 
@@ -39,7 +57,11 @@ public class MessageUI : MonoBehaviour
             return;
 
         IsShowing = false;
-        messageText.gameObject.SetActive(false);
+
+        gameObject.SetActive(false);
         Time.timeScale = 1f;
+
+        onClosed?.Invoke();
+        onClosed = null;
     }
 }

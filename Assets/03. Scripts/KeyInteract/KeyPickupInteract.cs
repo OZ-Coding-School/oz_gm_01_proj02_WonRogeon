@@ -5,24 +5,35 @@ public class KeyPickupInteract : MonoBehaviour, IInteractable
     [SerializeField] private string keyId = "Zone4Key";
 
     private bool pickedUp;
-    private bool pendingDisable;
+
+    private void Start()
+    {
+        SyncWithInventory();
+    }
+
+    /// <summary>
+    /// 로드 이후 / 씬 시작 시
+    /// 인벤토리 상태와 동기화
+    /// </summary>
+    public void SyncWithInventory()
+    {
+        if (KeyInventory.Instance == null)
+            return;
+
+        if (KeyInventory.Instance.HasKey(keyId))
+        {
+            pickedUp = true;
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            pickedUp = false;
+            gameObject.SetActive(true);
+        }
+    }
 
     public void Interact()
     {
-        // 메시지가 떠 있으면 최우선 처리
-        if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
-        {
-            MessageUI.Instance.Hide();
-
-            if (pendingDisable)
-            {
-                gameObject.SetActive(false);
-            }
-
-            return;
-        }
-
-        // 이미 획득한 상태면 아무 것도 하지 않음
         if (pickedUp)
             return;
 
@@ -31,16 +42,14 @@ public class KeyPickupInteract : MonoBehaviour, IInteractable
 
     private void TryPickupKey()
     {
+        if (!KeyInventory.Instance.AddKey(keyId))
+            return;
+
         pickedUp = true;
 
-        if (KeyInventory.Instance.AddKey(keyId))
-        {
-            pendingDisable = true;
-            MessageUI.Instance.Show($"Aya get a {keyId}.");
-        }
-        else
-        {
-            pickedUp = false;
-        }
+        MessageUI.Instance.Show(
+            $"Aya get a {keyId}.",
+            () => gameObject.SetActive(false)
+        );
     }
 }

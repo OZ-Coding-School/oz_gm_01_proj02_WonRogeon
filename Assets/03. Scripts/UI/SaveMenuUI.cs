@@ -33,6 +33,11 @@ public class SaveMenuUI : MonoBehaviour
 
     private void Update()
     {
+        if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
+        {
+            return;
+        }
+
         if (!isOpen)
             return;
 
@@ -111,7 +116,13 @@ public class SaveMenuUI : MonoBehaviour
             Close(false);
             SaveSlotMenuUI.Instance.Open();
         }
+        else if (currentIndex == 1) // LOAD
+        {
+            Close(false);
+            LoadSlotMenuUI.Instance.Open();
+        }
     }
+
 
     private void UpdateVisual()
     {

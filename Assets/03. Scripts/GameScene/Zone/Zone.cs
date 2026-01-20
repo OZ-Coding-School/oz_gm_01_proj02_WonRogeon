@@ -49,4 +49,5 @@ public class Zone : MonoBehaviour
 
     // virtual 가상메서드로 만든 이유는 나중에 미래 확장용으로 
     // 이벤트zone이나 컷신zone 등을 만들 때를 대비한 것
+
 }

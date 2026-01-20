@@ -25,11 +25,18 @@ public class SaveManager : MonoBehaviour
         if (!Directory.Exists(SaveDir))
             Directory.CreateDirectory(SaveDir);
 
+        Zone current = ZoneManager.Instance.CurrentZone;
+
         SaveData data = new SaveData
         {
-            floorAndRoom = ZoneManager.Instance.CurrentZoneDisplayName,
+            floorAndRoom = current.DisplayName,
+            floor = current.floor,
+            zoneName = current.zoneName,
             playTimeSeconds = PlayTimeTracker.Instance.PlayTimeSeconds,
-            savedAt = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+            savedAt = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+
+            // ø≠ºË ¿˙¿Â
+            ownedKeys = KeyInventory.Instance.GetAllKeys()
         };
 
         string json = JsonUtility.ToJson(data, true);

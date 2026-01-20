@@ -40,6 +40,7 @@ public class SaveConfirmUI : MonoBehaviour
 
     private void Update()
     {
+
         if (!isOpen)
             return;
 

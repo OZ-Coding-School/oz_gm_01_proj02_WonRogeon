@@ -7,6 +7,8 @@ public class ZoneManager : MonoBehaviour
 
     [Header("Current Zone")]
     [SerializeField] private Zone currentZone;
+    public Zone CurrentZone => currentZone;
+
 
     private bool isTransitioning = false;
 
@@ -101,4 +103,52 @@ public class ZoneManager : MonoBehaviour
 
         currentZone.OnEnter();
     }
+
+    public void LoadZone(int floor, string zoneName)
+    {
+        StartCoroutine(LoadZoneRoutine(floor, zoneName));
+    }
+
+    private IEnumerator LoadZoneRoutine(int floor, string zoneName)
+    {
+        yield return FadeController.Instance.FadeOut();
+
+        Zone target = FindZone(floor, zoneName);
+        if (target == null)
+        {
+            Debug.LogError($"[Load] Zone not found: {floor}F {zoneName}");
+            yield break;
+        }
+
+        if (currentZone != null)
+            currentZone.gameObject.SetActive(false);
+
+        target.gameObject.SetActive(true);
+        currentZone = target;
+
+        Player.Instance.transform.position = target.transform.position;
+
+        CameraController.Instance.transform.position =
+            new Vector3(
+                Player.Instance.transform.position.x,
+                Player.Instance.transform.position.y,
+                -10f
+            );
+
+        currentZone.OnEnter();
+
+        yield return FadeController.Instance.FadeIn();
+    }
+
+    private Zone FindZone(int floor, string zoneName)
+    {
+        Zone[] zones = FindObjectsOfType<Zone>(true); // 비활성 포함
+        foreach (var z in zones)
+        {
+            if (z.floor == floor && z.zoneName == zoneName)
+                return z;
+        }
+        return null;
+    }
+
 }

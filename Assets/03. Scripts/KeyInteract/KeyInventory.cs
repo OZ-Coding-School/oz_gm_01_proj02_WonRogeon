@@ -7,6 +7,7 @@ public class KeyInventory : MonoBehaviour
     public static KeyInventory Instance;
 
     public event Action<int> OnKeyCountChanged;
+    public event Action OnKeysRestored;
 
     private HashSet<string> keys = new();
 
@@ -15,7 +16,10 @@ public class KeyInventory : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
             Destroy(gameObject);
     }
@@ -44,5 +48,30 @@ public class KeyInventory : MonoBehaviour
     public bool HasAnyKey()
     {
         return keys.Count > 0;
+    }
+
+    // =========================
+    // 저장/로드 전용 API
+    // =========================
+
+    public List<string> GetAllKeys()
+    {
+        return new List<string>(keys);
+    }
+
+    public void RestoreKeys(List<string> savedKeys)
+    {
+        keys.Clear();
+
+        if (savedKeys == null)
+        {
+            OnKeyCountChanged?.Invoke(0);
+            return;
+        }
+
+        foreach (var key in savedKeys)
+            keys.Add(key);
+
+        OnKeyCountChanged?.Invoke(keys.Count);
     }
 }

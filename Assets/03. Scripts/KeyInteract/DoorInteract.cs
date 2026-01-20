@@ -7,31 +7,19 @@ public class DoorInteract : MonoBehaviour, IInteractable
     [SerializeField] private DoorStateProvider doorState;
 
     private bool doorOpened;
-    private bool pendingOpen;
 
-    /// <summary>
-    /// PlayerInteraction에서 Space 입력 시 호출됨
-    /// </summary>
     public void Interact()
     {
         if (doorOpened)
             return;
 
-        // 메시지가 떠 있는 상태라면
-        // 닫기 / 후속 처리만 담당
+        // 메시지가 떠 있으면 닫기만
         if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
         {
             MessageUI.Instance.Hide();
-
-            if (pendingOpen)
-            {
-                OpenDoor();
-            }
-
             return;
         }
 
-        // 메시지가 없을 때만 문 열기 시도
         TryOpenDoor();
     }
 
@@ -45,7 +33,7 @@ public class DoorInteract : MonoBehaviour, IInteractable
             return;
         }
 
-        pendingOpen = true;
+        OpenDoor();
 
         MessageUI.Instance.Show(
             "Aya opened the locked door with a key."
@@ -54,7 +42,6 @@ public class DoorInteract : MonoBehaviour, IInteractable
 
     private void OpenDoor()
     {
-        pendingOpen = false;
         doorOpened = true;
 
         if (doorState != null)
@@ -64,5 +51,7 @@ public class DoorInteract : MonoBehaviour, IInteractable
 
         if (doorTilemap != null)
             doorTilemap.SetActive(false);
+
+        gameObject.SetActive(false);
     }
 }
