@@ -18,7 +18,12 @@ public class SaveConfirmUI : MonoBehaviour
 
     private int currentIndex;
     private bool isOpen;
+    public bool IsOpen => isOpen;
+
     private int slotIndex;
+
+    private bool ignoreSubmitThisFrame;
+
 
     private void Awake()
     {
@@ -57,9 +62,12 @@ public class SaveConfirmUI : MonoBehaviour
         isOpen = true;
         currentIndex = 0;
 
+        ignoreSubmitThisFrame = true; 
+
         root.SetActive(true);
         UpdateVisual();
     }
+
 
     private void Close()
     {
@@ -93,20 +101,30 @@ public class SaveConfirmUI : MonoBehaviour
 
     private void HandleSubmitInput()
     {
+        if (ignoreSubmitThisFrame)
+        {
+            ignoreSubmitThisFrame = false;
+            return;
+        }
+
         if (!Input.GetKeyDown(KeyCode.Space))
             return;
 
         if (currentIndex == 0)
         {
-            // YES : 아직 아무 동작도 하지 않음
-            return;
+            SaveManager.Instance.Save(slotIndex);
+            SaveSlotMenuUI.Instance.RefreshSlot(slotIndex);
+
+            Close();
+            SaveSlotMenuUI.Instance.ResumeFromConfirm();
         }
         else
         {
-            // NO
             Cancel();
         }
     }
+
+
 
     private void UpdateVisual()
     {

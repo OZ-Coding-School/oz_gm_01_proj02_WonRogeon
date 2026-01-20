@@ -35,6 +35,9 @@ public class SaveSlotMenuUI : MonoBehaviour
 
     private void Update()
     {
+        if (SaveConfirmUI.Instance != null && SaveConfirmUI.Instance.IsOpen)
+            return;
+
         if (!isOpen || inputLocked)
             return;
 
@@ -61,6 +64,7 @@ public class SaveSlotMenuUI : MonoBehaviour
         root.SetActive(true);
         Time.timeScale = 0f;
 
+        LoadAllSlots();
         UpdateVisual();
     }
 
@@ -118,4 +122,37 @@ public class SaveSlotMenuUI : MonoBehaviour
                 selectionBar.position.z
             );
     }
+
+    public void RefreshSlot(int index)
+    {
+        SaveData data = SaveManager.Instance.Load(index);
+        if (data == null)
+            return;
+
+        string time = System.TimeSpan
+            .FromSeconds(data.playTimeSeconds)
+            .ToString(@"hh\:mm\:ss");
+
+        slotTexts[index].text =
+            $"DATA{index + 1:D2}   {data.floorAndRoom}   {time}";
+    }
+
+    private void LoadAllSlots()
+    {
+        for (int i = 0; i < slotTexts.Length; i++)
+        {
+            SaveData data = SaveManager.Instance.Load(i);
+            if (data == null)
+                continue;
+
+            string time = System.TimeSpan
+                .FromSeconds(data.playTimeSeconds)
+                .ToString(@"hh\:mm\:ss");
+
+            slotTexts[i].text =
+                $"DATA{i + 1:D2}   {data.floorAndRoom}   {time}";
+        }
+    }
+
+
 }

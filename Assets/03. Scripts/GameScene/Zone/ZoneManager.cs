@@ -10,6 +10,19 @@ public class ZoneManager : MonoBehaviour
 
     private bool isTransitioning = false;
 
+    /// <summary>
+    /// 저장/로드용 현재 Zone 표시 이름
+    /// </summary>
+    public string CurrentZoneDisplayName
+    {
+        get
+        {
+            return currentZone != null
+                ? currentZone.DisplayName   // 예: "1F Aya Room"
+                : "Unknown";
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -70,7 +83,6 @@ public class ZoneManager : MonoBehaviour
     // ===== 안전한 시작 루틴 =====
     private IEnumerator SceneStartRoutineSafe()
     {
-        // 필수 싱글톤 준비 대기
         while (FadeController.Instance == null)
             yield return null;
 
@@ -83,13 +95,10 @@ public class ZoneManager : MonoBehaviour
         while (currentZone == null)
             yield return null;
 
-        // 풀 리셋
         PoolManager.Instance.ResetPool("StartScene_Light");
 
-        // 페이드 인
         yield return FadeController.Instance.FadeIn();
 
-        // 최초 Zone 진입
         currentZone.OnEnter();
     }
 }

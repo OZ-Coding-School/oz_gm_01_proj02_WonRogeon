@@ -14,6 +14,18 @@ public class Zone : MonoBehaviour
     public bool followCamera = false;
     public Transform cameraFixedPoint;
 
+    /// <summary>
+    /// 저장/로드 및 UI 표시용 Zone 이름
+    /// 예: "1F Aya Room"
+    /// </summary>
+    public string DisplayName
+    {
+        get
+        {
+            return $"{floor}F {zoneName}";
+        }
+    }
+
     public virtual void OnEnter()
     {
         Debug.Log($"[Zone Enter] {zoneName}");
