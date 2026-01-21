@@ -15,7 +15,7 @@ public class PosterHintInteract : MonoBehaviour, IInteractable
         // 최초 상호작용 시 힌트 표시
         
             MessageUI.Instance.Show(
-                "Find the one who is different from the others."
+                "혼자만 다른 녀석을 찾아라."
             );
         
     }

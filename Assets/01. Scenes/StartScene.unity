@@ -657,29 +657,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'How To Play
-
-
-    - Move with WASD or Arrow Keys
-
-    - Interact with
-    SPACE
-
-    - Some objects react only once
-
-    - Explore rooms to progress
-
-
-    This
-    is a Week 1 build.
-
-    Progress is blocked after completing the shadow puzzle.
-
-
-'
+  m_text: "\uD50C\uB808\uC774 \uBC29\uBC95\n\n- \uD654\uC0B4\uD45C\uB098 WASD\uD0A4\uB85C
+    \uC774\uB3D9\n- \uC2A4\uD398\uC774\uC2A4\uBC14\uB97C \uD1B5\uD574 \uC0C1\uD638\uC791\uC6A9\n-
+    \uC544\uC57C\uB97C \uB3C4\uC640 \uC800\uD0DD\uC5D0\uC11C \uD0C8\uCD9C\uD558\uC138\uC694\n\n2\uC8FC\uCC28
+    \uBE4C\uB4DC\uC785\uB2C8\uB2E4.\n\n\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
+  m_sharedMaterial: {fileID: -8260433314543064663, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1742,6 +1726,7 @@ MonoBehaviour:
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0, g: 0, b: 0, a: 1}
   mainSceneName: MainScene
+  selectionMoveDuration: 0.15
 --- !u!1 &1824600537
 GameObject:
   m_ObjectHideFlags: 0

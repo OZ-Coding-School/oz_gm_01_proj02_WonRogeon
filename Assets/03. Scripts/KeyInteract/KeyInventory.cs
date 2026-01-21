@@ -7,7 +7,6 @@ public class KeyInventory : MonoBehaviour
     public static KeyInventory Instance;
 
     public event Action<int> OnKeyCountChanged;
-    public event Action OnKeysRestored;
 
     private HashSet<string> keys = new();
 

@@ -24,12 +24,12 @@ public class AyaRoomZone : Zone
                 new MonologueLine {
                     character = "Aya",
                     expression = "Default",
-                    message = "This house feels really creepy."
+                    message = "집 분위기가 너무 으스스해."
                 },
                 new MonologueLine {
                     character = "Aya",
                     expression = "Default",
-                    message = "Maybe I should go outside for a bit."
+                    message = "밖에 나가서 확인해봐야겠어."
                 }
             }
         );

@@ -3,7 +3,7 @@ using UnityEngine;
 public class DoorInteract : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject doorTilemap;
-    [SerializeField] private string requiredKeyId = "Zone4Key";
+    [SerializeField] private string requiredKeyId = "퍼즐방 열쇠";
     [SerializeField] private DoorStateProvider doorState;
 
     private bool doorOpened;
@@ -28,16 +28,16 @@ public class DoorInteract : MonoBehaviour, IInteractable
         if (!KeyInventory.Instance.HasKey(requiredKeyId))
         {
             MessageUI.Instance.Show(
-                "The door seems locked.\nIt looks like Aya need a key."
+                "문이 잠겨있다. 열쇠가 필요해 보인다."
             );
             return;
         }
 
-        OpenDoor();
 
         MessageUI.Instance.Show(
-            "Aya opened the locked door with a key."
+            "실험실에서 가져온 열쇠가 딱 맞는다."
         );
+        OpenDoor();
     }
 
     private void OpenDoor()

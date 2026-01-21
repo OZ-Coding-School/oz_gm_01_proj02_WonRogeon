@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class KeyPickupInteract : MonoBehaviour, IInteractable
 {
-    [SerializeField] private string keyId = "Zone4Key";
+    [SerializeField] private string keyId = "ÆÛÁñ¹æ ¿­¼è";
 
     private bool pickedUp;
 
@@ -48,7 +48,7 @@ public class KeyPickupInteract : MonoBehaviour, IInteractable
         pickedUp = true;
 
         MessageUI.Instance.Show(
-            $"Aya get a {keyId}.",
+            $"¾Æ¾ß´Â {keyId}¸¦ È¹µæÇß´Ù.",
             () => gameObject.SetActive(false)
         );
     }
