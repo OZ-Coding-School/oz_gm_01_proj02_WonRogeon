@@ -28,7 +28,7 @@ public class AyaRoomZone : Zone
                 },
                 new MonologueLine {
                     character = "Aya",
-                    expression = "Default",
+                    expression = "Smile",
                     message = "밖에 나가서 확인해봐야겠어."
                 }
             }
