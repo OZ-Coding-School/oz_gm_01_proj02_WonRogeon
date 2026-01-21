@@ -1029,7 +1029,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Yes
+  m_text: "\uB124"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
   m_sharedMaterial: {fileID: -8260433314543064663, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
@@ -5010,7 +5010,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: No
+  m_text: "\uC544\uB2C8\uC624"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
   m_sharedMaterial: {fileID: -8260433314543064663, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
@@ -5147,6 +5147,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420033}
   - component: {fileID: 519420034}
+  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5172,7 +5173,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -5287,6 +5288,30 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &519420035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_AssetsPPU: 32
+  m_RefResolutionX: 512
+  m_RefResolutionY: 384
+  m_CropFrame: 0
+  m_GridSnapping: 0
+  m_FilterMode: 0
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!4 &523798601 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4890573347353213585, guid: 1964b8d1109c506479d422b461775797, type: 3}
@@ -34185,7 +34210,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.0009765625, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -36826,7 +36851,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2002774359
   m_SortingLayer: -2
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.0005187988, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -43227,7 +43252,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Would you like to save?
+  m_text: "\uC800\uC7A5\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
   m_sharedMaterial: {fileID: -8260433314543064663, guid: c60fa4f9c7b22f84d87ef89efd0580ba, type: 2}
