@@ -23,7 +23,7 @@ public class AyaRoomZone : Zone
             {
                 new MonologueLine {
                     character = "Aya",
-                    expression = "Default",
+                    expression = "Smile",
                     message = "집 분위기가 너무 으스스해."
                 },
                 new MonologueLine {

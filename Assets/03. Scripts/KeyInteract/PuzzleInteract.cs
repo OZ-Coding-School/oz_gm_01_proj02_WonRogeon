@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PuzzleInteract : MonoBehaviour, IInteractable
 {
@@ -65,6 +66,9 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
         if (isSolved) return;
 
         isSolved = true;
+
+        GetComponent<Collider2D>().enabled = false;
+
         StartCoroutine(PuzzleClearSequence());
     }
 
@@ -78,6 +82,29 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
 
         // 3. 화면 점점 밝아짐
         yield return StartCoroutine(Fade(screenFadeGroup, 1f, 0f, fadeInDuration));
+
+        // 4. 아야 대사 추가
+        if (MonologueUI.Instance != null)
+        {
+            var lines = new List<MonologueLine>
+            {
+                new MonologueLine
+                {
+                    character = "Aya",
+                    expression = "Frightened",
+                    message = "어디서 벽 부서지는 소리가 났어!"
+                },
+                new MonologueLine
+                {
+                    character = "Aya",
+                    expression = "Smile",
+                    message = "확인해볼까?"
+                }
+            };
+
+            MonologueUI.Instance.ShowSequence(lines);
+        }
+
     }
 
     private void ClosePuzzleInternal()
