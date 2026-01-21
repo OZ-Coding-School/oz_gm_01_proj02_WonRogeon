@@ -7,12 +7,9 @@ using UnityEngine;
 /// </summary>
 public class Zone : MonoBehaviour
 {
+    [Header("Zone Info")]
     public string zoneName;
     public int floor;
-
-    [Header("Camera Settings")]
-    public bool followCamera = false;
-    public Transform cameraFixedPoint;
 
     /// <summary>
     /// 저장/로드 및 UI 표시용 Zone 이름
@@ -20,16 +17,31 @@ public class Zone : MonoBehaviour
     /// </summary>
     public string DisplayName
     {
-        get
-        {
-            return $"{floor}F {zoneName}";
-        }
+        get { return $"{floor}F {zoneName}"; }
     }
+
+    // =========================
+    // Lighting Settings
+    // =========================
+    [Header("Lighting Settings")]
+    [Range(0f, 1f)]
+    [SerializeField]
+    private float globalLightIntensity = 0.3f;
+
+    public float GlobalLightIntensity => globalLightIntensity;
+
+    // =========================
+    // Camera Settings
+    // =========================
+    [Header("Camera Settings")]
+    public bool followCamera = false;
+    public Transform cameraFixedPoint;
 
     public virtual void OnEnter()
     {
         Debug.Log($"[Zone Enter] {zoneName}");
 
+        // 카메라 처리
         if (followCamera)
         {
             CameraController.Instance.SetFollow(Player.Instance.transform);
@@ -39,6 +51,7 @@ public class Zone : MonoBehaviour
             CameraController.Instance.SetFixed(cameraFixedPoint.position);
         }
 
+        // Zone UI
         ZoneInfoUI.Instance.SetZoneInfo(floor, zoneName);
     }
 
@@ -47,7 +60,6 @@ public class Zone : MonoBehaviour
         Debug.Log($"[Zone Exit] {zoneName}");
     }
 
-    // virtual 가상메서드로 만든 이유는 나중에 미래 확장용으로 
-    // 이벤트zone이나 컷신zone 등을 만들 때를 대비한 것
-
+    // virtual 가상메서드로 만든 이유:
+    // 이후 이벤트 Zone, 컷신 Zone 등 확장 대비
 }

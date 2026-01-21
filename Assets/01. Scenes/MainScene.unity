@@ -1983,6 +1983,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoneName: "\uC544\uC57C\uC758 \uBC29"
   floor: 1
+  globalLightIntensity: 0.3
   followCamera: 0
   cameraFixedPoint: {fileID: 1565497221}
 --- !u!1 &249888513
@@ -2412,6 +2413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoneName: "\uBCF5\uB3C4"
   floor: 1
+  globalLightIntensity: 0.2
   followCamera: 1
   cameraFixedPoint: {fileID: 1622493398}
 --- !u!1 &332907026
@@ -3825,6 +3827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentZone: {fileID: 210439257}
+  globalLight: {fileID: 183810833}
 --- !u!4 &494555898
 Transform:
   m_ObjectHideFlags: 0
@@ -42646,6 +42649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoneName: "\uC2E4\uD5D8\uC2E4"
   floor: 2
+  globalLightIntensity: 0.05
   followCamera: 1
   cameraFixedPoint: {fileID: 307174770}
 --- !u!4 &1607842907
@@ -44549,6 +44553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoneName: "\uD37C\uC990\uBC29"
   floor: 1
+  globalLightIntensity: 0.4
   followCamera: 1
   cameraFixedPoint: {fileID: 0}
 --- !u!4 &1963534267

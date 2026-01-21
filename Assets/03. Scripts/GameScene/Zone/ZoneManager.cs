@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class ZoneManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class ZoneManager : MonoBehaviour
     [SerializeField] private Zone currentZone;
     public Zone CurrentZone => currentZone;
 
+    [Header("Lighting")]
+    [SerializeField] private Light2D globalLight;   // Global Light 2D 참조
 
     private bool isTransitioning = false;
 
@@ -20,7 +23,7 @@ public class ZoneManager : MonoBehaviour
         get
         {
             return currentZone != null
-                ? currentZone.DisplayName   // 예: "1F Aya Room"
+                ? currentZone.DisplayName
                 : "Unknown";
         }
     }
@@ -76,6 +79,7 @@ public class ZoneManager : MonoBehaviour
             );
 
         currentZone.OnEnter();
+        ApplyGlobalLight();   // Zone 진입 후 밝기 적용
 
         yield return FadeController.Instance.FadeIn();
 
@@ -102,6 +106,7 @@ public class ZoneManager : MonoBehaviour
         yield return FadeController.Instance.FadeIn();
 
         currentZone.OnEnter();
+        ApplyGlobalLight();   // 시작 Zone 밝기 적용
     }
 
     public void LoadZone(int floor, string zoneName)
@@ -136,6 +141,7 @@ public class ZoneManager : MonoBehaviour
             );
 
         currentZone.OnEnter();
+        ApplyGlobalLight();   // 로드 시 밝기 적용
 
         yield return FadeController.Instance.FadeIn();
     }
@@ -151,4 +157,12 @@ public class ZoneManager : MonoBehaviour
         return null;
     }
 
+    // ===== Global Light 처리 =====
+    private void ApplyGlobalLight()
+    {
+        if (globalLight == null || currentZone == null)
+            return;
+
+        globalLight.intensity = currentZone.GlobalLightIntensity;
+    }
 }
