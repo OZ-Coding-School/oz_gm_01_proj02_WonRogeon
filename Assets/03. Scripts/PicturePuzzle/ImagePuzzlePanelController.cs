@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class ImagePuzzlePanelController : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class ImagePuzzlePanelController : MonoBehaviour
     [SerializeField] private GameObject puzzlePanel;
     [SerializeField] private ImagePuzzleInteract trigger;
 
+    [Header("Clear Result")]
+    [SerializeField] private GameObject[] disableTargets;
     public void OnPuzzleSolved()
     {
         StartCoroutine(ClearSequence());
@@ -20,19 +23,29 @@ public class ImagePuzzlePanelController : MonoBehaviour
         // 2. 퍼즐 패널 닫기
         puzzlePanel.SetActive(false);
 
-        // 3. 퍼즐 재진입 방지
+        // 3. 퍼즐 클리어 결과 오브젝트 비활성화
+        if (disableTargets != null)
+        {
+            foreach (var obj in disableTargets)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
+        }
+
+        // 4. 퍼즐 재진입 방지
         if (trigger != null)
             trigger.gameObject.SetActive(false);
 
 
-        // 4. 게임 상태 복구
+        // 5. 게임 상태 복구
         Time.timeScale = 1f;
 
         var playerInteraction = FindObjectOfType<PlayerInteraction>();
         if (playerInteraction != null)
             playerInteraction.enabled = true;
 
-        // 5. 페이드 인
+        // 6. 페이드 인
         yield return StartCoroutine(Fade(1f, 0f));
     }
 
