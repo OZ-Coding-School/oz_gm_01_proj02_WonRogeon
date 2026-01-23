@@ -433,6 +433,9 @@ MonoBehaviour:
   menuMoveDuration: 0.6
   menuInterval: 0.15
   selectionMoveDuration: 0.15
+  ayaScreamSFX: {fileID: 8300000, guid: 638295b1b7175514ea4499910f8fe762, type: 3}
+  moveSFX: {fileID: 8300000, guid: 57b9affa931567f4094801bb9d87f984, type: 3}
+  confirmSFX: {fileID: 8300000, guid: 99352ebd16695db4aa7b712100f6303d, type: 3}
 --- !u!4 &550412487
 Transform:
   m_ObjectHideFlags: 0

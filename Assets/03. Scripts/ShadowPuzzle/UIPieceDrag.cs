@@ -13,6 +13,9 @@ public class UIPieceDrag : MonoBehaviour,
     private PuzzleBoard board;
     private PuzzlePiece piece;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip dropSFX; 
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -65,6 +68,14 @@ public class UIPieceDrag : MonoBehaviour,
         else
         {
             rectTransform.anchoredPosition = originalAnchoredPos;
+        }
+
+        if (dropSFX != null && SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayGameSFXAt(
+                Camera.main.transform.position,
+                dropSFX
+            );
         }
 
         FindObjectOfType<PuzzleAnswerChecker>()?.CheckAnswer();

@@ -2,12 +2,17 @@ using UnityEngine;
 
 public class ElectricDoorInteract : MonoBehaviour, IInteractable
 {
+    [Header("SFX")]
+    [SerializeField] private AudioClip lockedSFX;
+
     public void Interact()
     {
         if (MessageUI.Instance.IsShowing)
             return;
 
-        // 1번째 메시지
+        // 잠김 사운드
+        PlayLockedSFX();
+
         MessageUI.Instance.Show(
             "문이 잠겨있다.",
             ShowSecondMessage
@@ -16,9 +21,19 @@ public class ElectricDoorInteract : MonoBehaviour, IInteractable
 
     private void ShowSecondMessage()
     {
-        // 2번째 메시지
         MessageUI.Instance.Show(
             "좌측의 패널과 연결되어있는 듯 하다."
+        );
+    }
+
+    private void PlayLockedSFX()
+    {
+        if (SoundManager.Instance == null || lockedSFX == null)
+            return;
+
+        SoundManager.Instance.PlayGameSFXAt(
+            transform.position,
+            lockedSFX
         );
     }
 }

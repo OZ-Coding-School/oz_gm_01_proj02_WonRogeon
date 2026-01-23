@@ -11,6 +11,11 @@ public class ImagePuzzlePanelController : MonoBehaviour
     [Header("Clear Result")]
     [SerializeField] private GameObject[] disableTargets;
 
+    [Header("Clear SFX")]
+    [SerializeField] private AudioClip doorOpenSFX;
+    [SerializeField] private AudioClip ayaMonologueSFX;
+    [SerializeField] private float doorOpenDelay = 0.4f;
+
     public void OnPuzzleSolved()
     {
         StartCoroutine(ClearSequence());
@@ -49,7 +54,21 @@ public class ImagePuzzlePanelController : MonoBehaviour
         yield return StartCoroutine(Fade(1f, 0f));
 
         // =========================
-        // 7. 메시지 UI
+        // 7. 문 열리는 소리
+        // =========================
+        if (SoundManager.Instance != null && doorOpenSFX != null)
+        {
+            SoundManager.Instance.PlayGameSFXAt(
+                Player.Instance.transform.position,
+                doorOpenSFX
+            );
+        }
+
+        // 소리 여운
+        yield return new WaitForSecondsRealtime(doorOpenDelay);
+
+        // =========================
+        // 8. 메시지 UI
         // =========================
         bool messageClosed = false;
 
@@ -61,23 +80,36 @@ public class ImagePuzzlePanelController : MonoBehaviour
         yield return new WaitUntil(() => messageClosed);
 
         // =========================
-        // 8. 아야 독백
+        // 9. 짧은 정적
         // =========================
-        var monologueLines = new List<MonologueLine>
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        // =========================
+        // 10. 아야 독백 + 숨소리
+        // =========================
+        if (SoundManager.Instance != null && ayaMonologueSFX != null)
         {
-            new MonologueLine
-            {
-                character = "Aya",
-                expression = "Default",
-                message = "문이 열렸나봐"
-            },
-            new MonologueLine
-            {
-                character = "Aya",
-                expression = "Smile",
-                message = "엄마랑 아빠도 저기에 계실까?"
-            }
-        };
+            SoundManager.Instance.PlayGameSFXAt(
+                Player.Instance.transform.position,
+                ayaMonologueSFX
+            );
+        }
+
+        var monologueLines = new List<MonologueLine>
+    {
+        new MonologueLine
+        {
+            character = "Aya",
+            expression = "Default",
+            message = "문이 열렸나봐"
+        },
+        new MonologueLine
+        {
+            character = "Aya",
+            expression = "Smile",
+            message = "엄마랑 아빠도 저기에 계실까?"
+        }
+    };
 
         MonologueUI.Instance.ShowSequence(monologueLines);
     }

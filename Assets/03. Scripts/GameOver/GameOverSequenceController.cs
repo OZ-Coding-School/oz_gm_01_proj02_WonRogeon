@@ -24,6 +24,14 @@ public class GameOverSequenceController : MonoBehaviour
     [SerializeField] private float menuInterval = 0.15f;
     [SerializeField] private float selectionMoveDuration = 0.15f;
 
+    [Header("GameOver SFX")]
+    [SerializeField] private AudioClip ayaScreamSFX;
+
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip confirmSFX;
+
+
     private Animator bloodAnimator;
     private Animator ayaAnimator;
     private SpriteRenderer bloodSR;
@@ -67,11 +75,18 @@ public class GameOverSequenceController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             currentIndex = 1 - currentIndex;
+
+            if (SoundManager.Instance != null && moveSFX != null)
+                SoundManager.Instance.PlayUISFX(moveSFX);
+
             UpdateSelection();
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (SoundManager.Instance != null && confirmSFX != null)
+                SoundManager.Instance.PlayUISFX(confirmSFX);
+
             ExecuteSelection();
         }
     }
@@ -81,7 +96,17 @@ public class GameOverSequenceController : MonoBehaviour
         bloodEffect.SetActive(true);
         bloodSR.color = new Color(1, 1, 1, 1);
         bloodAnimator.Play(0, 0, 0f);
+
+        // ===== 아야 비명 소리 =====
+        if (SoundManager.Instance != null && ayaScreamSFX != null)
+        {
+            SoundManager.Instance.PlayGameSFXAt(
+                transform.position,   // 화면 중앙 기준
+                ayaScreamSFX
+            );
+        }
     }
+
 
     // Blood 애니메이션 끝에서 호출
     public void OnBloodEffectFinished()

@@ -12,9 +12,14 @@ public class SaveMenuUI : MonoBehaviour
     [SerializeField] private Color normalColor = new Color(1f, 1f, 1f, 0.5f);
     [SerializeField] private Color selectedColor = new Color(1f, 1f, 1f, 1f);
 
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip submitSFX;
+    [SerializeField] private AudioClip backSFX;
+
     private int currentIndex;
     private bool isOpen;
-    private bool ignoreEscapeOnce;   
+    private bool ignoreEscapeOnce;
 
     public bool IsOpen => isOpen;
 
@@ -34,9 +39,7 @@ public class SaveMenuUI : MonoBehaviour
     private void Update()
     {
         if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
-        {
             return;
-        }
 
         if (!isOpen)
             return;
@@ -45,10 +48,11 @@ public class SaveMenuUI : MonoBehaviour
         {
             if (ignoreEscapeOnce)
             {
-                ignoreEscapeOnce = false; // 이 프레임 ESC 무시
+                ignoreEscapeOnce = false;
                 return;
             }
 
+            PlayUISFX(backSFX);
             Close(true);
             return;
         }
@@ -77,7 +81,7 @@ public class SaveMenuUI : MonoBehaviour
     {
         isOpen = true;
         currentIndex = 0;
-        ignoreEscapeOnce = true;   // 여기서만 ESC 1회 차단
+        ignoreEscapeOnce = true;
 
         root.SetActive(true);
         UpdateVisual();
@@ -97,11 +101,13 @@ public class SaveMenuUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentIndex = (currentIndex - 1 + menuTexts.Length) % menuTexts.Length;
+            PlayUISFX(moveSFX);
             UpdateVisual();
         }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentIndex = (currentIndex + 1) % menuTexts.Length;
+            PlayUISFX(moveSFX);
             UpdateVisual();
         }
     }
@@ -110,6 +116,8 @@ public class SaveMenuUI : MonoBehaviour
     {
         if (!Input.GetKeyDown(KeyCode.Space))
             return;
+
+        PlayUISFX(submitSFX);
 
         if (currentIndex == 0) // SAVE
         {
@@ -123,7 +131,6 @@ public class SaveMenuUI : MonoBehaviour
         }
     }
 
-
     private void UpdateVisual()
     {
         for (int i = 0; i < menuTexts.Length; i++)
@@ -131,5 +138,13 @@ public class SaveMenuUI : MonoBehaviour
             menuTexts[i].color =
                 (i == currentIndex) ? selectedColor : normalColor;
         }
+    }
+
+    private void PlayUISFX(AudioClip clip)
+    {
+        if (clip == null || SoundManager.Instance == null)
+            return;
+
+        SoundManager.Instance.PlayUISFX(clip);
     }
 }

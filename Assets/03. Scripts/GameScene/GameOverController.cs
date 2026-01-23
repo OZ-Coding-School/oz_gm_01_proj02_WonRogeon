@@ -44,15 +44,28 @@ public class GameOverController : MonoBehaviour
         Time.timeScale = 0f;
         yield return new WaitForSecondsRealtime(freezeTime);
 
-        // 2. 화면 페이드 아웃
+        Coroutine bgmFade = null;
+
+        // 2. BGM 페이드 아웃 + 정지 (타임스케일 무관)
+        if (SoundManager.Instance != null)
+        {
+            bgmFade = SoundManager.Instance.FadeOutAndStopBGM(this);
+        }
+
+        // 3. 화면 페이드 아웃
         yield return FadeOut();
 
-        // 3. 타임스케일 복구 
+        // 4. BGM 페이드가 아직 끝나지 않았다면 대기
+        if (bgmFade != null)
+            yield return bgmFade;
+
+        // 5. 타임스케일 복구
         Time.timeScale = 1f;
 
-        // 4. 종료씬 전환
+        // 6. 종료 씬 전환
         SceneManager.LoadScene(endSceneName);
     }
+
 
     private IEnumerator FadeOut()
     {

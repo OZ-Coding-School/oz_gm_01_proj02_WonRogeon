@@ -20,6 +20,18 @@ public class StartMenuController : MonoBehaviour
     [Header("Tween")]
     [SerializeField] private float selectionMoveDuration = 0.15f;
 
+    [Header("BGM")]
+    [SerializeField] private AudioClip startBGM;
+
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip confirmSFX;
+    [SerializeField] private AudioClip backSFX;
+
+    [Header("Option")]
+    [SerializeField] private GameObject optionPanel;
+
+
     private bool isTransitioning = false;
     private bool isCreditsOpen = false;
 
@@ -35,6 +47,9 @@ public class StartMenuController : MonoBehaviour
 
         if (creditsPanel != null)
             creditsPanel.SetActive(false);
+
+        if (SoundManager.Instance != null && startBGM != null)
+            SoundManager.Instance.PlayBGM(startBGM);
     }
 
     private void Update()
@@ -44,8 +59,9 @@ public class StartMenuController : MonoBehaviour
 
         if (isCreditsOpen)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
+                PlayUISFX(backSFX);
                 CloseCredits();
             }
             return;
@@ -55,6 +71,7 @@ public class StartMenuController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            PlayUISFX(confirmSFX);
             HandleSubmitInput();
         }
     }
@@ -82,6 +99,8 @@ public class StartMenuController : MonoBehaviour
             currentIndex = 0;
 
         lastInputTime = Time.time;
+
+        PlayUISFX(moveSFX);
         UpdateVisual();
     }
 
@@ -89,15 +108,18 @@ public class StartMenuController : MonoBehaviour
     {
         switch (currentIndex)
         {
-            case 0: // New Game
+            case 0:
                 StartCoroutine(StartGameRoutine());
                 break;
 
-            case 3: // Credits
+            case 2: // Option
+                OpenOption();
+                break;
+            case 3:
                 OpenCredits();
                 break;
 
-            case 4: // Quit
+            case 4:
                 Application.Quit();
                 break;
         }
@@ -106,6 +128,9 @@ public class StartMenuController : MonoBehaviour
     private IEnumerator StartGameRoutine()
     {
         isTransitioning = true;
+
+        if (SoundManager.Instance != null)
+            yield return SoundManager.Instance.FadeOutAndStopBGM(this);
 
         yield return FadeController.Instance.FadeOut();
         SceneManager.LoadScene(mainSceneName);
@@ -126,7 +151,27 @@ public class StartMenuController : MonoBehaviour
         isCreditsOpen = false;
     }
 
-    // 연출 추가
+    private void OpenOption()
+    {
+        if (optionPanel == null)
+            return;
+
+        PlayUISFX(confirmSFX);
+
+        optionPanel.SetActive(true);
+
+        // 스타트 메뉴 입력 차단
+        isTransitioning = true;
+    }
+
+    public void OnOptionClosed()
+    {
+        PlayUISFX(backSFX);
+        isTransitioning = false;
+    }
+
+
+
 
     private void UpdateVisual()
     {
@@ -149,12 +194,11 @@ public class StartMenuController : MonoBehaviour
     {
         UpdateTextColor();
 
-        selectionBar.position =
-            new Vector3(
-                selectionBar.position.x,
-                menuTexts[currentIndex].transform.position.y,
-                selectionBar.position.z
-            );
+        selectionBar.position = new Vector3(
+            selectionBar.position.x,
+            menuTexts[currentIndex].transform.position.y,
+            selectionBar.position.z
+        );
     }
 
     private void UpdateTextColor()
@@ -164,5 +208,13 @@ public class StartMenuController : MonoBehaviour
             menuTexts[i].color =
                 (i == currentIndex) ? selectedColor : normalColor;
         }
+    }
+
+    private void PlayUISFX(AudioClip clip)
+    {
+        if (clip == null || SoundManager.Instance == null)
+            return;
+
+        SoundManager.Instance.PlayUISFX(clip);
     }
 }

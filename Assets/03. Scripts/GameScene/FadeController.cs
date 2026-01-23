@@ -2,9 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// 화면 페이드 인/아웃 제어
-/// </summary>
 public class FadeController : MonoBehaviour
 {
     public static FadeController Instance;
@@ -17,32 +14,50 @@ public class FadeController : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
+        {
             Destroy(gameObject);
+            return;
+        }
     }
 
     public IEnumerator FadeOut()
     {
+        if (fadeImage == null)
+            yield break;
+
         yield return Fade(0f, 1f);
     }
 
     public IEnumerator FadeIn()
     {
+        if (fadeImage == null)
+            yield break;
+
         yield return Fade(1f, 0f);
     }
 
     private IEnumerator Fade(float from, float to)
     {
+        if (fadeImage == null)
+            yield break;
+
         float t = 0f;
-        Color color = fadeImage.color;
+        Color baseColor = fadeImage.color;
 
         while (t < fadeDuration)
         {
-            t += Time.deltaTime;
+            // 씬 전환 중 파괴 대비
+            if (fadeImage == null)
+                yield break;
+
+            t += Time.unscaledDeltaTime;
             float alpha = Mathf.Lerp(from, to, t / fadeDuration);
-            fadeImage.color = new Color(color.r, color.g, color.b, alpha);
+            fadeImage.color = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+
             yield return null;
         }
 
-        fadeImage.color = new Color(color.r, color.g, color.b, to);
+        if (fadeImage != null)
+            fadeImage.color = new Color(baseColor.r, baseColor.g, baseColor.b, to);
     }
 }

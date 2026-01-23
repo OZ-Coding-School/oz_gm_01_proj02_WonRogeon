@@ -13,6 +13,14 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
     [SerializeField] private float fadeOutDuration = 0.5f;
     [SerializeField] private float fadeInDuration = 0.8f;
 
+    [Header("Monologue SFX")]
+    [SerializeField] private AudioClip puzzleClearMonologueSFX;
+
+    [Header("Puzzle Clear SFX")]
+    [SerializeField] private AudioClip wallBreakSFX;
+    [SerializeField] private float wallBreakDelay = 0.3f;
+
+
     private bool isOpened;
     private bool isSolved;
 
@@ -26,7 +34,6 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
         PuzzleAnswerChecker.OnPuzzleSolved -= HandlePuzzleSolved;
     }
 
-    // 닫는건 따로 포함안되어있어서 업데이트에서 처리하자
     private void Update()
     {
         if (!isOpened || isSolved)
@@ -66,7 +73,6 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
         if (isSolved) return;
 
         isSolved = true;
-
         GetComponent<Collider2D>().enabled = false;
 
         StartCoroutine(PuzzleClearSequence());
@@ -74,37 +80,63 @@ public class PuzzleInteract : MonoBehaviour, IInteractable
 
     private IEnumerator PuzzleClearSequence()
     {
-        // 1. 화면 점점 어두워짐
-        yield return StartCoroutine(Fade(screenFadeGroup, 0f, 1f, fadeOutDuration));
+        // 1. 화면 어두워짐
+        yield return StartCoroutine(
+            Fade(screenFadeGroup, 0f, 1f, fadeOutDuration)
+        );
 
-        // 2. 완전히 어두워졌을 때 퍼즐 패널 닫기
+        // 2. 퍼즐 패널 닫기
         ClosePuzzleInternal();
 
-        // 3. 화면 점점 밝아짐
-        yield return StartCoroutine(Fade(screenFadeGroup, 1f, 0f, fadeInDuration));
+        // 3. 화면 밝아짐
+        yield return StartCoroutine(
+            Fade(screenFadeGroup, 1f, 0f, fadeInDuration)
+        );
 
-        // 4. 아야 대사 추가
-        if (MonologueUI.Instance != null)
+        // 3.5 아주 짧은 정적 (긴장감)
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        // 4. 벽 부서지는 소리
+        if (SoundManager.Instance != null && wallBreakSFX != null)
         {
-            var lines = new List<MonologueLine>
-            {
-                new MonologueLine
-                {
-                    character = "Aya",
-                    expression = "Frightened",
-                    message = "어디서 벽 부서지는 소리가 났어!"
-                },
-                new MonologueLine
-                {
-                    character = "Aya",
-                    expression = "Smile",
-                    message = "확인해볼까?"
-                }
-            };
-
-            MonologueUI.Instance.ShowSequence(lines);
+            SoundManager.Instance.PlayGameSFXAt(
+                Player.Instance.transform.position,
+                wallBreakSFX
+            );
         }
 
+        // 5. 소리 인지할 시간
+        yield return new WaitForSecondsRealtime(wallBreakDelay);
+
+        // 6. 아야 독백 시작 + 첫 독백 SFX
+        if (SoundManager.Instance != null && puzzleClearMonologueSFX != null)
+        {
+            SoundManager.Instance.PlayGameSFXAt(
+                Player.Instance.transform.position,
+                puzzleClearMonologueSFX
+            );
+        }
+
+        if (MonologueUI.Instance != null)
+        {
+            MonologueUI.Instance.ShowSequence(
+                new List<MonologueLine>
+                {
+                    new MonologueLine
+                    {
+                        character = "Aya",
+                        expression = "Frightened",
+                        message = "어디서 벽 부서지는 소리가 났어!"
+                    },
+                    new MonologueLine
+                    {
+                        character = "Aya",
+                        expression = "Smile",
+                        message = "확인해볼까?"
+                    }
+                }
+            );
+        }
     }
 
     private void ClosePuzzleInternal()

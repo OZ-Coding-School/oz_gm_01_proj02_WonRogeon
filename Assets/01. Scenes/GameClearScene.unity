@@ -642,6 +642,9 @@ MonoBehaviour:
   menuInterval: 0.15
   selectionMoveDuration: 0.15
   mainSceneName: MainScene
+  moveSFX: {fileID: 8300000, guid: 57b9affa931567f4094801bb9d87f984, type: 3}
+  confirmSFX: {fileID: 8300000, guid: 99352ebd16695db4aa7b712100f6303d, type: 3}
+  clearBGM: {fileID: 8300000, guid: 87b83693aa3135942bcfd334b3930231, type: 3}
 --- !u!1 &1977640891
 GameObject:
   m_ObjectHideFlags: 0

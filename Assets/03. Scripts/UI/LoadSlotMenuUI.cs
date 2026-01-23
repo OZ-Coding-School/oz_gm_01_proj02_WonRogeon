@@ -17,10 +17,14 @@ public class LoadSlotMenuUI : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color selectedColor = Color.black;
 
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip submitSFX;
+    [SerializeField] private AudioClip backSFX;
+
     private int currentIndex;
     private bool isOpen;
     private bool ignoreSubmitOnce;
-
 
     private void Awake()
     {
@@ -37,17 +41,15 @@ public class LoadSlotMenuUI : MonoBehaviour
 
     private void Update()
     {
-        // Space 입력 자체를 처리하지 않는다
         if (MessageUI.Instance != null && MessageUI.Instance.IsShowing)
-        {
             return;
-        }
 
         if (!isOpen)
             return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            PlayUISFX(backSFX);
             Close();
             SaveMenuUI.Instance.ReopenFromSlot();
             return;
@@ -64,7 +66,6 @@ public class LoadSlotMenuUI : MonoBehaviour
 
         isOpen = true;
         currentIndex = 0;
-
         ignoreSubmitOnce = true;
 
         root.SetActive(true);
@@ -95,6 +96,7 @@ public class LoadSlotMenuUI : MonoBehaviour
         currentIndex =
             (currentIndex + dir + slotTexts.Length) % slotTexts.Length;
 
+        PlayUISFX(moveSFX);
         UpdateVisual();
     }
 
@@ -113,9 +115,9 @@ public class LoadSlotMenuUI : MonoBehaviour
         if (data == null)
             return;
 
+        PlayUISFX(submitSFX);
         LoadGame(data);
     }
-
 
     private void LoadGame(SaveData data)
     {
@@ -125,7 +127,6 @@ public class LoadSlotMenuUI : MonoBehaviour
     private IEnumerator LoadRoutine(SaveData data)
     {
         isOpen = false;
-
         Time.timeScale = 1f;
 
         yield return FadeController.Instance.FadeOut();
@@ -139,7 +140,7 @@ public class LoadSlotMenuUI : MonoBehaviour
         // Zone 이동
         ZoneManager.Instance.LoadZone(data.floor, data.zoneName);
 
-        yield return null; // Zone 전환 후 1프레임 대기
+        yield return null;
 
         foreach (var key in FindObjectsOfType<KeyPickupInteract>(true))
         {
@@ -150,12 +151,6 @@ public class LoadSlotMenuUI : MonoBehaviour
 
         yield return FadeController.Instance.FadeIn();
     }
-
-
-
-
-
-
 
     private void LoadAllSlots()
     {
@@ -191,5 +186,13 @@ public class LoadSlotMenuUI : MonoBehaviour
                 slotTexts[currentIndex].transform.position.y,
                 selectionBar.position.z
             );
+    }
+
+    private void PlayUISFX(AudioClip clip)
+    {
+        if (clip == null || SoundManager.Instance == null)
+            return;
+
+        SoundManager.Instance.PlayUISFX(clip);
     }
 }

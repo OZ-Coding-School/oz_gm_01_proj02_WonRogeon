@@ -4,6 +4,9 @@ public class KeyPickupInteract : MonoBehaviour, IInteractable
 {
     [SerializeField] private string keyId = "ÆÛÁñ¹æ ¿­¼è";
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip pickupSFX; 
+
     private bool pickedUp;
 
     private void Start()
@@ -46,6 +49,14 @@ public class KeyPickupInteract : MonoBehaviour, IInteractable
             return;
 
         pickedUp = true;
+
+        if (pickupSFX != null && SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayGameSFXAt(
+                transform.position,
+                pickupSFX
+            );
+        }
 
         MessageUI.Instance.Show(
             $"¾Æ¾ß´Â {keyId}¸¦ È¹µæÇß´Ù.",

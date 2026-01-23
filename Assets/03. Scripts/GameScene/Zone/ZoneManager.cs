@@ -13,6 +13,9 @@ public class ZoneManager : MonoBehaviour
     [Header("Lighting")]
     [SerializeField] private Light2D globalLight;   // Global Light 2D ÂüÁ¶
 
+    [Header("Zone SFX")]
+    [SerializeField] private AudioClip zoneTransitionSFX;
+
     private bool isTransitioning = false;
 
     /// <summary>
@@ -65,6 +68,14 @@ public class ZoneManager : MonoBehaviour
 
         nextZone.gameObject.SetActive(true);
         currentZone = nextZone;
+
+        if (SoundManager.Instance != null && zoneTransitionSFX != null)
+        {
+            SoundManager.Instance.PlayGameSFXAt(
+                Player.Instance.transform.position,
+                zoneTransitionSFX
+            );
+        }
 
         if (Player.Instance != null && spawnPoint != null)
         {

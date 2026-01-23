@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameClearSequenceController : MonoBehaviour
 {
@@ -25,6 +26,13 @@ public class GameClearSequenceController : MonoBehaviour
     [Header("Scene")]
     [SerializeField] private string mainSceneName = "MainScene";
 
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip confirmSFX;
+
+    [Header("BGM")]
+    [SerializeField] private AudioClip clearBGM;
+
     private bool canInput;
     private int currentIndex; // 0 = Retry, 1 = Quit
     private Tween selectionTween;
@@ -32,6 +40,10 @@ public class GameClearSequenceController : MonoBehaviour
     private void Start()
     {
         InitUI();
+
+        if (SoundManager.Instance != null && clearBGM != null)
+            SoundManager.Instance.PlayBGM(clearBGM);
+
         StartSequence();
     }
 
@@ -51,7 +63,7 @@ public class GameClearSequenceController : MonoBehaviour
 
     private void StartSequence()
     {
-        // 1. 페이드 인 (어두움 → 밝음)
+        // 1. 페이드 인
         fadeGroup.DOFade(0f, 1.2f)
             .OnComplete(ShowClearText);
     }
@@ -104,17 +116,34 @@ public class GameClearSequenceController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            currentIndex = 0;
-            UpdateSelection();
+            if (currentIndex != 0)
+            {
+                currentIndex = 0;
+
+                if (SoundManager.Instance != null && moveSFX != null)
+                    SoundManager.Instance.PlayUISFX(moveSFX);
+
+                UpdateSelection();
+            }
         }
         else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
-            currentIndex = 1;
-            UpdateSelection();
+            if (currentIndex != 1)
+            {
+                currentIndex = 1;
+
+                if (SoundManager.Instance != null && moveSFX != null)
+                    SoundManager.Instance.PlayUISFX(moveSFX);
+
+                UpdateSelection();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (SoundManager.Instance != null && confirmSFX != null)
+                SoundManager.Instance.PlayUISFX(confirmSFX);
+
             ExecuteSelection();
         }
     }
@@ -155,12 +184,25 @@ public class GameClearSequenceController : MonoBehaviour
 
         if (currentIndex == 0)
         {
-            FadeController.Instance.FadeOut();
-            SceneManager.LoadScene(mainSceneName);
+            StartCoroutine(RetryRoutine());
         }
         else
         {
             Application.Quit();
         }
     }
+
+    private IEnumerator RetryRoutine()
+    {
+        // BGM 페이드 아웃
+        if (SoundManager.Instance != null)
+            yield return SoundManager.Instance.FadeOutAndStopBGM(this);
+
+        // 화면 페이드 아웃
+        yield return FadeController.Instance.FadeOut();
+
+        SceneManager.LoadScene(mainSceneName);
+    }
+
+
 }

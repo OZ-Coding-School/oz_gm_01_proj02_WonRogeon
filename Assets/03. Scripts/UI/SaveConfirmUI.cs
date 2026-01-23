@@ -16,14 +16,17 @@ public class SaveConfirmUI : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color selectedColor = Color.black;
 
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip submitSFX;
+    [SerializeField] private AudioClip backSFX;
+
     private int currentIndex;
     private bool isOpen;
     public bool IsOpen => isOpen;
 
     private int slotIndex;
-
     private bool ignoreSubmitThisFrame;
-
 
     private void Awake()
     {
@@ -40,12 +43,12 @@ public class SaveConfirmUI : MonoBehaviour
 
     private void Update()
     {
-
         if (!isOpen)
             return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            PlayUISFX(backSFX);
             Cancel();
             return;
         }
@@ -63,12 +66,11 @@ public class SaveConfirmUI : MonoBehaviour
         isOpen = true;
         currentIndex = 0;
 
-        ignoreSubmitThisFrame = true; 
+        ignoreSubmitThisFrame = true;
 
         root.SetActive(true);
         UpdateVisual();
     }
-
 
     private void Close()
     {
@@ -97,6 +99,7 @@ public class SaveConfirmUI : MonoBehaviour
         currentIndex =
             (currentIndex + dir + optionTexts.Length) % optionTexts.Length;
 
+        PlayUISFX(moveSFX);
         UpdateVisual();
     }
 
@@ -111,7 +114,9 @@ public class SaveConfirmUI : MonoBehaviour
         if (!Input.GetKeyDown(KeyCode.Space))
             return;
 
-        if (currentIndex == 0)
+        PlayUISFX(submitSFX);
+
+        if (currentIndex == 0) // YES
         {
             SaveManager.Instance.Save(slotIndex);
             SaveSlotMenuUI.Instance.RefreshSlot(slotIndex);
@@ -119,13 +124,11 @@ public class SaveConfirmUI : MonoBehaviour
             Close();
             SaveSlotMenuUI.Instance.ResumeFromConfirm();
         }
-        else
+        else // NO
         {
             Cancel();
         }
     }
-
-
 
     private void UpdateVisual()
     {
@@ -141,5 +144,13 @@ public class SaveConfirmUI : MonoBehaviour
                 optionTexts[currentIndex].transform.position.y,
                 selectionBar.position.z
             );
+    }
+
+    private void PlayUISFX(AudioClip clip)
+    {
+        if (clip == null || SoundManager.Instance == null)
+            return;
+
+        SoundManager.Instance.PlayUISFX(clip);
     }
 }

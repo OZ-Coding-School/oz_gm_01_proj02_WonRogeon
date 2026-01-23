@@ -16,6 +16,11 @@ public class SaveSlotMenuUI : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color selectedColor = Color.black;
 
+    [Header("UI SFX")]
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip submitSFX;
+    [SerializeField] private AudioClip backSFX;
+
     private int currentIndex;
     private bool isOpen;
     private bool inputLocked;
@@ -43,6 +48,7 @@ public class SaveSlotMenuUI : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            PlayUISFX(backSFX);
             Close();
             SaveMenuUI.Instance.ReopenFromSlot();
             return;
@@ -95,6 +101,7 @@ public class SaveSlotMenuUI : MonoBehaviour
         currentIndex =
             (currentIndex + dir + slotTexts.Length) % slotTexts.Length;
 
+        PlayUISFX(moveSFX);
         UpdateVisual();
     }
 
@@ -103,6 +110,7 @@ public class SaveSlotMenuUI : MonoBehaviour
         if (!Input.GetKeyDown(KeyCode.Space))
             return;
 
+        PlayUISFX(submitSFX);
         inputLocked = true;
         SaveConfirmUI.Instance.Open(currentIndex);
     }
@@ -154,5 +162,11 @@ public class SaveSlotMenuUI : MonoBehaviour
         }
     }
 
+    private void PlayUISFX(AudioClip clip)
+    {
+        if (clip == null || SoundManager.Instance == null)
+            return;
 
+        SoundManager.Instance.PlayUISFX(clip);
+    }
 }

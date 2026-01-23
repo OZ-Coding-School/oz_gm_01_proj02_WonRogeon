@@ -25,6 +25,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private PatrolMoveType patrolMoveType = PatrolMoveType.Vertical;
     [SerializeField] private float patrolSwitchTime = 2f;
 
+    [Header("Chase SFX")]
+    public AudioClip ChaseStartSFX;
+
+
     public PatrolMoveType PatrolMoveType => patrolMoveType;
     public float PatrolSwitchTime => patrolSwitchTime;
 
